@@ -1,0 +1,30 @@
+---
+import { Menu as QMenu } from "../../qwik";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <a href="/qwik">Back</a>
+
+    <QMenu>
+      <h2>MENU CONTENT</h2>
+      <ul>
+        {
+          "a,b,c".split(",").map((li) => (
+            <li>
+              <a href={`#${li}`} class="  underline">
+                {li}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </QMenu>
+  </body>
+</html>

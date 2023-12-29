@@ -1,0 +1,23 @@
+---
+const list = "abcdefghijklmnopqrstuvwxyz".split("");
+import Letter from "../../player/Letter.astro";
+import Layout from "../../player/Layout.astro";
+import Player from "../../player/Player.astro";
+---
+
+<Layout title="View transition">
+  <Player>
+    <h1>VIew transitions</h1>
+    <div class="flex flex-wrap gap-4">
+      {
+        list.map((li) => (
+          <a href={`/transitions/${li}`}>
+            <div transition:name={`box ${li}`}>
+              <Letter name={li} />
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </Player>
+</Layout>

@@ -1,0 +1,8 @@
+---
+const {name} = Astro.props
+---
+<div class=" w-48 h-48 bg-blue-300 flex-[0_0_auto] text-[100px] capitalize text-center" 
+    transition:name={`letter-${name}`}
+    >
+    {name}
+</div>

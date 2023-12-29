@@ -1,0 +1,18 @@
+---
+import { Todo as QTodo } from "../../qwik";
+
+const todos = "A,B,C,D".split(",");
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <a href="/qwik">Back</a>
+    <QTodo data={todos} />
+  </body>
+</html>

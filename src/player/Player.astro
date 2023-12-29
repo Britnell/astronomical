@@ -1,0 +1,50 @@
+---
+import { fade } from "astro:transitions";
+const { name } = Astro.props;
+const list = "abcdefghijklmnopqrstuvwxyz".split("");
+---
+
+<div class="max-w-[1100px] mx-auto">
+  <header>
+    <div class="flex gap-80 items-center">
+      <a href="/transitions">
+        <h1 class="font-black text-xl py-4 px-4">Transitions header</h1>
+      </a>
+      <a href="/">back</a>
+    </div>
+  </header>
+  <main>
+    <div class="flex gap-10">
+      <div
+        class="flex-[0_0_auto] w-64 bg-blue-200"
+        transition:name="sidebar"
+        transition:animate={fade({ duration: "0.8s" })}
+      >
+        <ul class="flex flex-col gap-2">
+          {
+            list.map((li) => (
+              <a
+                href={`/transitions/${li}`}
+                class={
+                  " py-1 px-3" +
+                  (li === name ? " bg-blue-400" : " hover:bg-blue-300")
+                }
+              >
+                <li>{li}</li>
+              </a>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="">
+        <slot />
+      </div>
+    </div>
+  </main>
+</div>
+<div class="">
+        <slot />
+      </div>
+    </div>
+  </main>
+</div>
