@@ -14,11 +14,13 @@
       <h1>{"Astro <3 Qwik"}</h1>
     </header>
     <main>
-      <ul>
+      <ul class="flex gap-8">
         {
           "counter,menu,todo,tabs".split(",").map((name) => (
             <li>
-              <a href={`/qwik/${name}`}>{name}</a>
+              <a class=" bg-gray-100 p-2 " href={`/qwik/${name}`}>
+                {name}
+              </a>
             </li>
           ))
         }
