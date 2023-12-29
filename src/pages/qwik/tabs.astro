@@ -1,0 +1,59 @@
+---
+import { Tabs as QTabs, Tabslot } from "../../qwik";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <style is:global lang="scss">
+      :where(.tab0, .tab1, .tab2) .tab {
+        display: none;
+      }
+      .tab0 .tab:nth-child(1) {
+        display: block;
+      }
+      .tab1 .tab:nth-child(2) {
+        display: block;
+      }
+      .tab2 .tab:nth-child(3) {
+        display: block;
+      }
+    </style>
+    <a href="/qwik">Back</a>
+
+    <QTabs tabs={["one", "two", "three"]}>
+      <div class="tab">
+        <h3>Tab One</h3>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, error.
+          Animi repellendus eaque, magni ipsam rerum exercitationem beatae,
+          dicta earum ea inventore numquam quia nulla velit temporibus
+          reiciendis cumque obcaecati?
+        </p>
+      </div>
+      <div class="tab">
+        <h3>Tab Two</h3>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, error.
+          Animi repellendus eaque, magni ipsam rerum exercitationem beatae,
+          dicta earum ea inventore numquam quia nulla velit temporibus
+          reiciendis cumque obcaecati?
+        </p>
+      </div>
+      <div class="tab">
+        <h3>Tab Three</h3>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, error.
+          Animi repellendus eaque, magni ipsam rerum exercitationem beatae,
+          dicta earum ea inventore numquam quia nulla velit temporibus
+          reiciendis cumque obcaecati?
+        </p>
+      </div>
+    </QTabs>
+  </body>
+</html>
