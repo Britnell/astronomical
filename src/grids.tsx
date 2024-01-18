@@ -12,8 +12,6 @@ type Movies = {
 };
 
 const Grids = component$(({ data }: { data: Movies[] }) => {
-  console.log(data);
-
   return (
     <div>
       <h1>Hey-ho! welcome to grid camp</h1>

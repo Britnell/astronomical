@@ -1,5 +1,5 @@
 ---
-import { Tabs as QTabs, Tabslot } from "../../qwik";
+import { Tabs as QTabs } from "../../qwik";
 ---
 
 <!doctype html>
@@ -11,6 +11,7 @@ import { Tabs as QTabs, Tabslot } from "../../qwik";
   </head>
   <body>
     <style is:global lang="scss">
+      //  this is the css used for tabs components
       :where(.tab0, .tab1, .tab2) .tab {
         display: none;
       }
@@ -25,35 +26,6 @@ import { Tabs as QTabs, Tabslot } from "../../qwik";
       }
     </style>
     <a href="/qwik">Back</a>
-
-    <QTabs tabs={["one", "two", "three"]}>
-      <div class="tab">
-        <h3>Tab One</h3>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, error.
-          Animi repellendus eaque, magni ipsam rerum exercitationem beatae,
-          dicta earum ea inventore numquam quia nulla velit temporibus
-          reiciendis cumque obcaecati?
-        </p>
-      </div>
-      <div class="tab">
-        <h3>Tab Two</h3>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, error.
-          Animi repellendus eaque, magni ipsam rerum exercitationem beatae,
-          dicta earum ea inventore numquam quia nulla velit temporibus
-          reiciendis cumque obcaecati?
-        </p>
-      </div>
-      <div class="tab">
-        <h3>Tab Three</h3>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, error.
-          Animi repellendus eaque, magni ipsam rerum exercitationem beatae,
-          dicta earum ea inventore numquam quia nulla velit temporibus
-          reiciendis cumque obcaecati?
-        </p>
-      </div>
-    </QTabs>
+    <QTabs />
   </body>
 </html>

@@ -7,6 +7,7 @@ import {
   useSignal,
   useStore,
   type QRL,
+  useComputed$,
 } from "@builder.io/qwik";
 
 export const Counter = component$(() => {
@@ -83,17 +84,97 @@ export const Todo = component$(({ data }: { data: string[] }) => {
   );
 });
 
-export const Tabs = component$(({ tabs }: { tabs: string[] }) => {
+export const Tabs = component$(() => {
+  return (
+    <>
+      <h1>Tabs</h1>
+      <p>
+        I first returned my jsx as I was rendered by a map. with hardcoded
+        buttons. we have to replace data.map and hardcode the tab buttons for
+        this to work.
+      </p>
+      <TabsFirst tabs={["one", "two", "three"]}>
+        <div class="tab">
+          <h3>Tab One</h3>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, error.
+            Animi repellendus eaque, magni ipsam rerum exercitationem beatae,
+            dicta earum ea inventore numquam quia nulla velit temporibus
+            reiciendis cumque obcaecati?
+          </p>
+        </div>
+        <div class="tab">
+          <h3>Tab Two</h3>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, error.
+            Animi repellendus eaque, magni ipsam rerum exercitationem beatae,
+            dicta earum ea inventore numquam quia nulla velit temporibus
+            reiciendis cumque obcaecati?
+          </p>
+        </div>
+        <div class="tab">
+          <h3>Tab Three</h3>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, error.
+            Animi repellendus eaque, magni ipsam rerum exercitationem beatae,
+            dicta earum ea inventore numquam quia nulla velit temporibus
+            reiciendis cumque obcaecati?
+          </p>
+        </div>
+      </TabsFirst>
+
+      <h1 class=" mt-10 text-2xl">Tab #2</h1>
+      <p>use Qwik named slots to provide tabs & contents</p>
+      <p>
+        {`we have a somewhat reusable component that ships renders fully to html &
+        minimal js, though the logic needs to be quite specific to fulfil the "no-jsx" `}
+      </p>
+      <p>
+        {`and we can still build content dynamically w data.map. but the child component won't need it's jsx if content is passed in via qwik:slots`}
+      </p>
+      <p>
+        {`this just requires tab buttons to have a data ttribute with tab number, and that tabs are wrapped in a div.tab `}
+      </p>
+
+      <TabSecond
+        callback$={$((el: HTMLElement, buttons: HTMLElement[]) => {
+          const activeClass = ["border-b-2", "border-black"];
+          buttons?.forEach((but) => but.classList.remove(...activeClass));
+          el.classList.add(...activeClass);
+        })}
+      >
+        <div q:slot="tabs">
+          <ul class=" flex gap-8">
+            {"one,two,three".split(",").map((no, n) => (
+              <li key={n}>
+                <button data-t={n} class={" bg-gray-100  px-3 py-1"}>
+                  Tab {no}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div q:slot="contents">
+          {"one,two,three".split(",").map((sec, s) => (
+            <div class="tab" key={s}>
+              <h3>
+                {sec} {sec} {sec} {sec} {sec} {sec} {sec}
+                Tab {sec} Contents ... Lorem ipsum dolor sit amet consectetur
+                adipisicing elit. Eum, error.
+              </h3>
+            </div>
+          ))}
+        </div>
+      </TabSecond>
+    </>
+  );
+});
+export const TabsFirst = component$(({ tabs }: { tabs: string[] }) => {
   const activeTab = useSignal(0);
 
   return (
     <>
       <div>
-        <h1>Tabs</h1>
-        <p>
-          I first returned my jsx as I was rendered by a map. with hardcoded
-          buttons. After hardcoding the buttons I started behaving well.
-        </p>
         <ul class=" flex gap-8">
           <li>
             <button
@@ -128,6 +209,7 @@ export const Tabs = component$(({ tabs }: { tabs: string[] }) => {
               Tab Three
             </button>
           </li>
+          {/* this map would mean jsx gets returned */}
           {/* {tabs.map((tab, t) => (
           <li key={t}>
             <button
@@ -152,76 +234,22 @@ export const Tabs = component$(({ tabs }: { tabs: string[] }) => {
           <Slot />
         </div>
       </div>
-      <NewTab />
     </>
   );
 });
 
-const NewTab = component$(() => {
-  return (
-    <div>
-      <Tabslot
-        callback$={$((el: HTMLElement, buttons: HTMLElement[]) => {
-          console.log(" tabchange");
-          const activeClass = ["border-b-2", "border-black"];
-          buttons?.forEach((but) => but.classList.remove(...activeClass));
-          el.classList.add(...activeClass);
-        })}
-      >
-        <div q:slot="tabs">
-          <ul class=" flex gap-8">
-            <li>
-              <button data-t={0} class={" bg-gray-100  px-3 py-1"}>
-                Tab One
-              </button>
-            </li>
-            <li>
-              <button data-t={1} class={" bg-gray-100  px-3 py-1"}>
-                Tab Two
-              </button>
-            </li>
-            <li>
-              <button data-t={2} class={" bg-gray-100  px-3 py-1"}>
-                Tab Three
-              </button>
-            </li>
-          </ul>
-        </div>
-        <div q:slot="contents">
-          <div class="tab">
-            <h3>
-              Tab One COntents ... Lorem ipsum dolor sit amet consectetur
-              adipisicing elit. Eum, error.
-            </h3>
-          </div>
-          <div class="tab">
-            <h3>
-              Tab Two COntents ... Lorem ipsum dolor sit amet consectetur
-              adipisicing elit. Eum, error.
-            </h3>
-          </div>
-          <div class="tab">
-            <h3>
-              Tab Three COntents ... Lorem ipsum dolor sit amet consectetur
-              adipisicing elit. Eum, error.
-            </h3>
-          </div>
-        </div>
-      </Tabslot>
-    </div>
-  );
-});
-
-export const Tabslot = component$(({ callback$ }: { callback$: any }) => {
+export const TabSecond = component$(({ callback$ }: { callback$: any }) => {
   const activeTab = useSignal(0);
   const ref = useSignal<HTMLDivElement>();
 
   useOn(
     "click",
     $((ev) => {
+      // listen to clicks on buttons
       const el = ev.target as HTMLElement;
       if (el?.tagName !== "BUTTON") return;
 
+      // get tab index from html attribute
       const i = parseInt(el.getAttribute("data-t") ?? "");
       if (isNaN(i)) return;
       activeTab.value = i;
@@ -233,12 +261,6 @@ export const Tabslot = component$(({ callback$ }: { callback$: any }) => {
 
   return (
     <div>
-      <h1 class=" mt-10 text-2xl">Tab #2</h1>
-      <p>i use Qwik named slots to provide tabs & contents</p>
-      <p>
-        {`we have a somewhat reusable component that ships renders fully to html &
-        minimal js, though the logic needs to be quite specific to fulfil the "no-jsx" `}
-      </p>
       <div ref={ref}>
         <Slot name="tabs" />
       </div>
@@ -253,5 +275,76 @@ export const Tabslot = component$(({ callback$ }: { callback$: any }) => {
         <Slot name="contents" />
       </div>
     </div>
+  );
+});
+
+export const Form = component$(() => {
+  const formdata = useStore({
+    name: { value: "name...", error: "" },
+    password: { value: "pass...", error: "" },
+  });
+
+  useComputed$(() => {
+    console.log({
+      name: formdata.name.value,
+      pw: formdata.password.value,
+    });
+  });
+
+  return (
+    <>
+      <h1>How would we do a form in qwik?</h1>
+      <form
+        preventdefault:submit
+        onSubmit$={(ev, el) => {
+          console.log(" Form submit : ", ev, el, formdata.name.value);
+
+          if (!formdata.name.value) {
+            formdata.name.error = "Please enter name";
+            return;
+          } else {
+            formdata.name.error = "";
+          }
+
+          if (!formdata.password.value) {
+            formdata.password.error = "Please enter password";
+            return;
+          } else {
+            formdata.password.error = "";
+          }
+        }}
+      >
+        <div>
+          <label>
+            {" "}
+            Name:
+            <input
+              id="name"
+              value={formdata.name.value}
+              onInput$={(_, el) => (formdata.name.value = el.value)}
+            />
+          </label>
+          <p class={!formdata.name.error ? "  hidden " : " block  "}>
+            {formdata.name.error}
+          </p>
+        </div>
+        <div>
+          <label>
+            {" "}
+            password:
+            <input
+              id="password"
+              value={formdata.password.value}
+              onInput$={(_, el) => (formdata.password.value = el.value)}
+            />
+          </label>
+          <p class={!formdata.password.error ? " hidden " : "  block "}>
+            {formdata.password.error}
+          </p>
+        </div>
+
+        <button>Submit</button>
+      </form>
+    </>
   );
 });
