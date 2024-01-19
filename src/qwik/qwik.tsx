@@ -1,4 +1,5 @@
 /** @jsxImportSource @builder.io/qwik */
+
 import {
   $,
   Slot,
@@ -6,17 +7,24 @@ import {
   useOn,
   useSignal,
   useStore,
-  type QRL,
   useComputed$,
+  useTask$,
+  useVisibleTask$,
 } from "@builder.io/qwik";
 
 export const Counter = component$(() => {
   const count = useSignal(0);
 
+  // to reuse function needs to be turned into QRL
+  const increment = $(() => count.value++);
+
   return (
     <div>
       <h1>Counter = {count.value}</h1>
       <button class=" bg-gray-200 p-2 " onClick$={() => count.value++}>
+        +1
+      </button>
+      <button class=" bg-gray-200 p-2 " onClick$={increment}>
         +1
       </button>
     </div>
@@ -54,15 +62,50 @@ export const Todo = component$(({ data }: { data: string[] }) => {
     todos: data.map((d) => ({ done: false, name: d, id: Date.now() })),
   });
 
+  useTask$(() => {
+    // with no track() it will run only on server
+    console.log(" Hello server ");
+    // BUT if the component is not rendered on first page load thenit WONT
+  });
+
+  useTask$(({ track }) => {
+    // we need to track specific values in the store ... tracking the whole array doesnt work...
+    // e.g. here just tracking length
+    track(() => store.todos.length);
+    console.log(" no of todos = ", store.todos.length);
+  });
+
+  useVisibleTask$(() => {
+    console.log(" on load & visible ");
+    const loc = window.localStorage.getItem("qwik-todos");
+    console.log({ loc });
+    try {
+      const json = JSON.parse(loc);
+      store.todos = json;
+    } catch (e) {
+      console.log(" bad data in loco");
+    }
+    //  this made weird errors when the id was a variable outside this scope
+    // const loc = window.localStorage.getItem(loc_id);
+  });
+
+  const update = $((ev: Event, el: HTMLInputElement, i: number) => {
+    console.log(" typed in el # ", i);
+    store.todos[i].name = el.value;
+    // update local storage
+    window.localStorage.setItem("qwik-todos", JSON.stringify(store.todos));
+  });
+
   return (
     <div>
       <h2>todos</h2>
       <ul class=" ml-6 ">
         {store.todos.map((todo, t) => (
-          <li key={todo.id} class="  list-disc list-item">
+          <li key={`${t}-${todo.id}`} class="  list-disc list-item">
             <input
               value={todo.name}
-              onInput$={(_, el) => (store.todos[t].name = el.value)}
+              onInput$={(ev, el) => update(ev, el, t)}
+              // onInput$={(_, el) => (store.todos[t].name = el.value)}
             />
           </li>
         ))}
