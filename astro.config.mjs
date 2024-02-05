@@ -1,11 +1,16 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 import qwikdev from "@qwikdev/astro";
 import react from "@astrojs/react";
 import tailwind from "@astrojs/tailwind";
-
 import vue from "@astrojs/vue";
+
+import node from "@astrojs/node";
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [qwikdev(), react(), tailwind(), vue()]
+  integrations: [qwikdev(), react(), tailwind(), vue()],
+  output: "hybrid",
+  adapter: node({
+    mode: "standalone",
+  }),
 });
