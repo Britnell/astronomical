@@ -1,0 +1,183 @@
+---
+
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alpine</title>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body>
+    <header>
+      Alpine
+      <a href="/">back</a>
+    </header>
+
+    <main class="px-8 mx-auto max-w-[800px]">
+      <h1>
+        Alpine
+        <span x-data x-text="1+1"></span>
+      </h1>
+      <section>
+        <div x-data="{ count: 1 }" class="my-6">
+          <h2 :class="{ even: count%2===0, odd:count%3===0 }">
+            Counter <span x-text="count"></span>
+             x 2 =
+            <span x-text="count*2"></span>
+            <span x-show="count%2===0">(is even!)</span>
+            <!-- x-show is hidden with display:none;  -->
+            <template x-if="count%2===1">
+              <span>(is odd...)</span>
+              <!-- x-if means the element is not inside the dom at all -->
+            </template>
+          </h2>
+          <p x-text="`the count is ${count} yo`"></p>
+          <button class="bg-slate-200" x-on:click="count++">+1</button>
+          <button class="bg-slate-200" @click="count+=3">+3</button>
+          <button class="bg-slate-200" @click="count*=2">x2</button>
+          <!-- <button class="" :disabled="count%2===0?'a':'b'"> RESET</button> -->
+        </div>
+      </section>
+
+      <section>
+        <div x-data="{open:false}" class="my-6">
+          <button @click="open=!open" class="bg-slate-100 p-1">menu</button>
+          <ul
+            class="list-disc absolute left-[50px] bg-blue-100 pl-6 px-2"
+            @click.outside="open=false"
+            x-show="open"
+            x-transition.opacity
+            x-transition:enter.duration.600ms
+            x-transition:leave.duration.400ms
+          >
+            <li>First</li>
+            <li>SEcond</li>
+            <li>Third</li>
+          </ul>
+          <p>bind:disable works fine with a boolean state</p>
+          <!-- <button :disabled="open">Submit</button> -->
+        </div>
+      </section>
+
+      <section>
+        <div
+          x-data=`{
+              search: '',
+              items: ['foo','fizz','fudge','fickle','fight','funk','fenk','fonk','firth','first'],
+              get filteredItems() {
+                  return this.items.filter(i => i.startsWith(this.search) ).sort((a,b)=>a>b?1:-1)
+                }
+            }`
+        >
+          <label>
+            Search : <span x-text="search"></span>
+            <div>
+              <input
+                x-model="search"
+                placeholder="Search..."
+                class="border border-black"
+              />
+            </div>
+          </label>
+          <p>Filtered :</p>
+          <ul class="list-disc grid grid-cols-3">
+            <template x-for="(item,i) in filteredItems">
+              <li x-text="`${i}. ${item}`"></li>
+            </template>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <script is:inline>
+          document.addEventListener("alpine:init", () => {
+            Alpine.data("user", () => ({
+              name: "John",
+            }));
+          });
+        </script>
+        <div x-data="user">
+          Hello
+          <span x-text="name"></span>
+        </div>
+      </section>
+
+      <section>
+        <script is:inline>
+          document.addEventListener("alpine:init", () => {
+            Alpine.store("global", {
+              userid: "19023057",
+              darkMode: false,
+            });
+          });
+        </script>
+        <div
+          x-data
+          :class="$store.global.darkMode ? ' bg-black text-white ' : 'y' "
+        >
+          <p>
+            User #<span x-text="$store.global.userid"></span>
+          </p>
+          <p>
+            Prefers
+            <span x-text="$store.global.darkMode ? 'light-mode' : 'dark-mode' "
+            ></span>
+            <button
+              @click="$store.global.darkMode=!$store.global.darkMode"
+              class="bg-slate-100 text-black">switch</button
+            >
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <div
+          x-data="{once:false, state:false, toggle(){ this.state = !this.state }}"
+        >
+          <p>BIND</p>
+          <button
+            @click="toggle()"
+            x-click="state=!state"
+            :class="state?' bg-red-200 ' : ' bg-green-200' ">TOGGLE</button
+          >
+        </div>
+      </section>
+
+      <section
+        x-data="{ pos: {x:0,y:0}, scroll: 0 }"
+        x-init="console.log('setup here')"
+      >
+        <p>Events</p>
+        <p>
+          Mouse Click [ <span x-text="pos.x"></span>,<span x-text="pos.y"
+          ></span> ]
+        </p>
+        <div @click.window="pos.x=$event.pageX; pos.y=$event.pageY;"></div>
+        <div @scroll.window="scroll=Math.floor(window.scrollY)"></div>
+        <div x-text="scroll" class="fixed top-0 right-0 bg-blue-100 p-1"></div>
+      </section>
+
+      <section x-data="{name:'Bob'}">
+        <p>Event / form</p>
+        <p>Name = <span x-text="name"></span></p>
+        <form x-ref="form" @submit.prevent="name=$event.target.name.value">
+          <input name="name" />
+          <button>save</button>
+        </form>
+        <button @click="console.log($refs.form.reset())">clear</button>
+      </section>
+
+      <style>
+        section {
+          margin: 2rem 0;
+        }
+      </style>
+    </main>
+  </body>
+</html>
