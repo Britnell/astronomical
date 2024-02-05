@@ -21,12 +21,14 @@ const badGuess = !!params.get("guess");
     <ViewTransitions />
   </head>
   <body>
-    <header>
-      <a href="/">Back</a>
-    </header>
     <main>
-      <div class="flex flex-row">
-        <h1 class="mr-20">Worlde</h1>
+      <div>
+        <a href="/">Back</a>
+      </div>
+      <p>A super simple wordle just using Astro SSR, cookies & html forms</p>
+      <p>SPA thanks to view transitions</p>
+      <div class="mt-10 mb-4 flex flex-row">
+        <h1 class="mr-20 text-xl">Worlde</h1>
         <button id="restart" transition:persist>restart</button>
       </div>
       <ul>
