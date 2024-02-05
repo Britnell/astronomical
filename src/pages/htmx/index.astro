@@ -1,0 +1,58 @@
+---
+import fs from "node:fs";
+
+try {
+  fs.accessSync("/tmp/count.txt");
+} catch {
+  fs.writeFileSync("/tmp/count.txt", "0");
+}
+
+const counter = fs.readFileSync("/tmp/count.txt", "utf-8");
+const count = 0;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://unpkg.com/htmx.org@1"></script>
+  </head>
+  <body>
+    <h1>HTMX</h1>
+
+    <p>Basic example from ahastack.dev</p>
+    <div class="p-8">
+      <p>
+        Count: <span id="count">{counter}</span>
+      </p>
+      <!-- <button class="bg-purple-200" hx-post="/htmx/increment" hx-target="#count"
+        >Increment</button
+      > -->
+      <button class="bg-purple-200" hx-post="/htmx/increment" hx-swap="none"
+        >Increment</button
+      >
+    </div>
+
+    <p>using hx-swap-oob & url state</p>
+    <div id="state-count" class="p-8" hx-swap-oob="true">
+      <p>State counter = {count}</p>
+      <button
+        class="bg-gray-200 m-1"
+        hx-get=`/htmx/count-${+count+1 }`
+        hx-swap="none">+1</button
+      >
+      <button
+        class="bg-gray-200 m-1"
+        hx-get=`/htmx/count-${+count+5 }`
+        hx-swap="none">+5</button
+      >
+      <button
+        class="bg-gray-200 m-1"
+        hx-get=`/htmx/count-${+count*2 }`
+        hx-swap="none">*2</button
+      >
+    </div>
+  </body>
+</html>
