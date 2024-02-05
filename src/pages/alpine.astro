@@ -1,5 +1,10 @@
 ---
+import Counter from "../alpine/counter.astro";
+import Form from "../alpine/form.astro";
 
+export const prerender = false;
+
+const date = new Date();
 ---
 
 <!doctype html>
@@ -95,23 +100,23 @@
       </section>
 
       <section>
+        <div x-data="dropb">
+          Helloooo
+          <span x-text="name"></span>
+        </div>
         <script is:inline>
           document.addEventListener("alpine:init", () => {
-            Alpine.data("user", () => ({
-              name: "John",
+            Alpine.data("dropb", () => ({
+              name: "Timothy",
             }));
           });
         </script>
-        <div x-data="user">
-          Hello
-          <span x-text="name"></span>
-        </div>
       </section>
 
       <section>
         <script is:inline>
           document.addEventListener("alpine:init", () => {
-            Alpine.store("global", {
+            Alpine.store("user", {
               userid: "19023057",
               darkMode: false,
             });
@@ -119,17 +124,17 @@
         </script>
         <div
           x-data
-          :class="$store.global.darkMode ? ' bg-black text-white ' : 'y' "
+          :class="$store.user.darkMode ? ' bg-black text-white ' : 'y' "
         >
           <p>
-            User #<span x-text="$store.global.userid"></span>
+            User #<span x-text="$store.user.userid"></span>
           </p>
           <p>
             Prefers
-            <span x-text="$store.global.darkMode ? 'light-mode' : 'dark-mode' "
+            <span x-text="$store.user.darkMode ? 'light-mode' : 'dark-mode' "
             ></span>
             <button
-              @click="$store.global.darkMode=!$store.global.darkMode"
+              @click="$store.user.darkMode=!$store.user.darkMode"
               class="bg-slate-100 text-black">switch</button
             >
           </p>
@@ -158,8 +163,9 @@
           Mouse Click [ <span x-text="pos.x"></span>,<span x-text="pos.y"
           ></span> ]
         </p>
-        <div @click.window="pos.x=$event.pageX; pos.y=$event.pageY;"></div>
-        <div @scroll.window="scroll=Math.floor(window.scrollY)"></div>
+        <div x-data @click.window="pos.x=$event.pageX; pos.y=$event.pageY;">
+        </div>
+        <div x-data @scroll.window="scroll=Math.floor(window.scrollY)"></div>
         <div x-text="scroll" class="fixed top-0 right-0 bg-blue-100 p-1"></div>
       </section>
 
@@ -173,9 +179,55 @@
         <button @click="console.log($refs.form.reset())">clear</button>
       </section>
 
+      <section>
+        <p>With astro for components</p>
+        <div class="flex gap-10">
+          <Counter value={date.getDate()} />
+          <Counter value={date.getMonth()} />
+        </div>
+      </section>
+
+      <Form />
+
+      <section>
+        <p>Trying the way J.H. handles input</p>
+        <div x-data="{ letters: ['','','','',''] }">
+          <form @keyup.window="addCharacter($event, $data)">
+            typing
+            <input
+              type="hidden"
+              name="guess"
+              x-bind:value="letters.slice(0, 5).join('')"
+            />
+          </form>
+          <p x-text="JSON.stringify(letters)"></p>
+        </div>
+        <script is:inline>
+          function addCharacter(evt, data) {
+            const letter = evt.key.toUpperCase();
+            const index = data.letters.indexOf("");
+            if (letter.length === 1) {
+              if (index !== -1) data.letters[index] = letter;
+            }
+            if (letter === "BACKSPACE") {
+              if (index === 0) return;
+              const p = index === -1 ? 4 : index - 1;
+              data.letters[p] = "";
+            }
+            if (letter === "ENTER") {
+              data.letters = ["", "", "", "", ""];
+            }
+          }
+        </script>
+      </section>
+
       <style>
         section {
           margin: 2rem 0;
+        }
+
+        main {
+          margin-bottom: 200px;
         }
       </style>
     </main>

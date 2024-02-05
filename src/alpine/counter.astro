@@ -1,0 +1,14 @@
+---
+export type Props = {
+  value: number;
+};
+const { value } = Astro.props;
+---
+
+<div x-data={`{ value: ${value}}`} class="flex flex-col items-center">
+  <button @click="value++">+1</button>
+  <p>
+    <span x-text="value"></span>
+  </p>
+  <button @click="value--">-1</button>
+</div>

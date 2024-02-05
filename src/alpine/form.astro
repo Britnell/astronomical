@@ -1,0 +1,45 @@
+---
+// export type Props = {
+//   fields: string[];
+// };
+
+// const { fields } = Astro.props;
+---
+
+<h2>Form component</h2>
+<div x-data={`{ name: '', email: '' }`}>
+  <form @submit.prevent="boop($event,$data)">
+    <div class="grid grid-cols-[100px_300px]">
+      <label :for="email"> Email</label>
+      <input
+        type="text"
+        id="email"
+        name="email"
+        x-model="email"
+        class="border border-slate-600"
+      />
+      <label for="name"> Name</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        x-model="name"
+        class="border border-slate-600"
+      />
+    </div>
+    <button>Submit</button>
+  </form>
+
+  <p x-text="`[${email}, ${name}]`"></p>
+  <script is:inline>
+    const boop = (ev, { name, email }) => {
+      const form = new FormData(ev.target);
+      console.log("ev ", form);
+      console.log(" sub ", { name, email });
+      fetch("/api/register", {
+        method: "POST",
+        body: JSON.stringify({ name, email }),
+      });
+    };
+  </script>
+</div>
