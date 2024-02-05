@@ -1,0 +1,44 @@
+---
+export async function getStaticPaths({ paginate }: { paginate: any }) {
+  // Generate pages from our array of astronauts, with 2 to a page
+  return paginate(
+    [
+      { name: "Leo", species: "Lion", age: 5 },
+      { name: "Bella", species: "Elephant", age: 10 },
+      { name: "Max", species: "Penguin", age: 3 },
+      { name: "Lucy", species: "Kangaroo", age: 6 },
+      { name: "Charlie", species: "Panda", age: 8 },
+      { name: "Milo", species: "Dolphin", age: 7 },
+      { name: "Coco", species: "Parrot", age: 4 },
+      { name: "Rocky", species: "Tiger", age: 9 },
+      { name: "Ruby", species: "Giraffe", age: 7 },
+      { name: "Jack", species: "Koala", age: 6 },
+    ],
+    { pageSize: 3 }
+  );
+}
+// All paginated data is passed on the "page" prop
+const { page } = Astro.props;
+---
+
+<div>
+  <a href="/">back</a>
+</div>
+<h1 class="text-xl">Animals in the zoo</h1>
+<p>{page.total} Animals</p>
+<div class="w-[300px] flex flex-row justify-between">
+  <a href={page.url.prev} class={page.url.prev ? "" : " opacity-50"}> prev</a>
+  <p>Page {page.currentPage} of {page.lastPage}</p>
+  <a href={page.url.next} class={page.url.next ? "" : " opacity-50"}> next</a>
+</div>
+<div>
+  <ul class="my-6 px-4 flex flex-col gap-2 items-start">
+    {
+      page.data.map((anim: any) => (
+        <li class=" bg-green-100 py-1 px-2 rounded-sm ">
+          {anim.name} ({anim.species})
+        </li>
+      ))
+    }
+  </ul>
+</div>
