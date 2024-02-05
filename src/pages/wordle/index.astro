@@ -1,0 +1,79 @@
+---
+export const prerender = false;
+
+import { ViewTransitions } from "astro:transitions";
+import { newGame, parseGame, type Game } from "../../wordle";
+
+const gameCookie = Astro.cookies.get("game")?.value;
+const game: Game = parseGame(gameCookie) ?? newGame();
+Astro.cookies.set("game", game);
+
+const params = new URLSearchParams(Astro.url.search);
+const badGuess = !!params.get("guess");
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <ViewTransitions />
+  </head>
+  <body>
+    <header>
+      <a href="/">Back</a>
+    </header>
+    <main>
+      <div class="flex flex-row">
+        <h1 class="mr-20">Worlde</h1>
+        <button id="restart" transition:persist>restart</button>
+      </div>
+      <ul>
+        {
+          game.guesses.map((guess, g) => (
+            <li class=" mb-[2px] flex gap-[2px] ">
+              {guess.split("").map((letter, l) => {
+                const mark = game.marks[g].charAt(l);
+                return (
+                  <span
+                    class={
+                      " inline-flex w-8 h-8  justify-center items-center   " +
+                      (mark === "x" ? " bg-green-200 " : "") +
+                      (mark === "o" ? "  bg-amber-200 " : "") +
+                      (mark === "_" ? "border-2 border-slate-300 " : "")
+                    }
+                  >
+                    {letter}
+                  </span>
+                );
+              })}
+            </li>
+          ))
+        }
+      </ul>
+      <form method="POST" action="/wordle/form" transition:persist>
+        <input autofocus class="border" type="text" name="guess" />
+        <button>go</button>
+      </form>
+      {badGuess && <p>Invalid guess</p>}
+    </main>
+
+    <script>
+      // Due to view transition the page is not reloaded and event handlers are not reattached
+      // thus we need transition:persist on these element so the element & event handlers remain
+      const button = document.getElementById("restart");
+      if (button)
+        button.onclick = () => {
+          document.cookie = `game=; Path=/; Max-Age=1`;
+          window.location.reload();
+        };
+
+      const form = document.getElementsByTagName("form")[0];
+      if (form)
+        form.addEventListener("submit", (ev) => {
+          setTimeout(() => form.reset(), 100);
+        });
+    </script>
+  </body>
+</html>
