@@ -1,6 +1,7 @@
 ---
 import Counter from "../alpine/counter.astro";
 import Form from "../alpine/form.astro";
+import Field from "../alpine/field.astro";
 
 export const prerender = false;
 
@@ -19,16 +20,16 @@ const date = new Date();
     ></script>
   </head>
   <body>
-    <header>
-      Alpine
-      <a href="/">back</a>
-    </header>
-
-    <main class="px-8 mx-auto max-w-[800px]">
+    <header class="flex justify-center gap-10">
+      <a href="/">{"<<"} back</a>
       <h1>
         Alpine
         <span x-data x-text="1+1"></span>
       </h1>
+      <a href="/alpine/ajax">/ajax</a>
+    </header>
+
+    <main class="px-8 mx-auto max-w-[800px]">
       <section>
         <div x-data="{ count: 1 }" class="my-6">
           <h2 :class="{ even: count%2===0, odd:count%3===0 }">
@@ -206,6 +207,8 @@ const date = new Date();
           function addCharacter(evt, data) {
             const letter = evt.key.toUpperCase();
             const index = data.letters.indexOf("");
+            // $data.letter gives weird proxy
+            // but we can work with it as if it was array
             if (letter.length === 1) {
               if (index !== -1) data.letters[index] = letter;
             }
@@ -221,6 +224,104 @@ const date = new Date();
         </script>
       </section>
 
+      <section>
+        <div x-data=`testform`>
+          <form @submit.prevent="check($data)">
+            <Field name="username" />
+            <Field name="password" />
+            <button
+              :class="isvalid ? ' bg-blue-100' : 'bg-slate-100' "
+              :disabled="!isvalid">submit</button
+            >
+          </form>
+        </div>
+        <!-- <p x-text="JSON.stringify(username) + JSON.stringify(password)"></p> -->
+        <script is:inline>
+          document.addEventListener("alpine:init", () => {
+            Alpine.data("testform", () => ({
+              username: { value: "", error: "" },
+              password: { value: "", error: "" },
+              get isvalid() {
+                return (
+                  this.username.value.length === 0 || this.password.value.length
+                );
+                // return this.username.error === "" && this.password.error === "";
+              },
+              check() {
+                const { username, password } = this;
+
+                if (username.value === "") {
+                  username.error = "please enter a username";
+                  return;
+                }
+                username.error = "";
+                if (password.value === "") {
+                  password.error = "please enter a password";
+                  return;
+                }
+                password.error = "";
+                console.log("SUBMIT ", username.value, ",", password.value);
+              },
+            }));
+          });
+        </script>
+      </section>
+
+      <section x-data="joker" x-init="getjoke">
+        <p>Joker</p>
+        <p x-text="joke">...loading</p>
+        <script is:inline>
+          document.addEventListener("alpine:init", () => {
+            Alpine.data("joker", () => ({
+              joke: "",
+              async getjoke() {
+                fetch("/alpine/joke")
+                  .then((res) => res.text())
+                  .then((x) => (this.joke = x));
+              },
+            }));
+          });
+        </script>
+      </section>
+
+      <section>
+        <p>TEXTAREA</p>
+        <div x-data="localnotes" x-init="load($data)" x-effect="update">
+          <textarea x-model="notes" class="w-[300px]"></textarea>
+          <p class="whitespace-pre">
+            Notes : <span x-text="notes"></span>
+          </p>
+        </div>
+        <script is:inline>
+          document.addEventListener("alpine:init", () => {
+            Alpine.data("localnotes", () => ({
+              notes: "",
+              update() {
+                localStorage.setItem("notes", this.notes);
+              },
+              load(data) {
+                const loc = localStorage.getItem("notes");
+                if (loc) data.notes = loc;
+              },
+            }));
+          });
+        </script>
+      </section>
+
+      <section>
+        <h2>scope</h2>
+        <div></div>
+        <div x-data="{foo:'123'}">
+          <div
+            x-data="{bar:'456', thing(){ console.log( this.foo + this.bar); }}"
+          >
+            <div x-data="{ thingy(){ console.log( this.foo + this.bar); }}">
+              <p x-text=" foo + bar "></p>
+              <button @click="thingy">what?</button>
+            </div>
+          </div>
+        </div>
+      </section>
       <style>
         section {
           margin: 2rem 0;

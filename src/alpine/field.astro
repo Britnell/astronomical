@@ -1,0 +1,26 @@
+---
+export type Props = {
+  name: string;
+};
+const { name } = Astro.props;
+---
+
+<div>
+  <label for={name}>{name}</label>
+  <input
+    type="text"
+    placeholder="..."
+    id={name}
+    name={name}
+    class="border border-slate-400"
+    x-model={`${name}.value`}
+    :invalid={`${name}.error!==''`}
+    :aria-describedby={`${name}.error!==''?'${name}-error':null`}
+  />
+  <p
+    id={`${name}-error`}
+    x-show={`${name}.error!==''`}
+    x-text={`${name}.error`}
+  >
+  </p>
+</div>
