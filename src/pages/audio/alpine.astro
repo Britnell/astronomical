@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body>
+    <h1>Sampler</h1>
+
+    <script is:inline>
+      let source, buffer;
+      const audioContext = new (window.AudioContext ||
+        window.webkitAudioContext)();
+      const keyState = {};
+
+      window.addEventListener("alpine:init", () => {
+        Alpine.data("sampler", () => ({
+          begin: 0.8,
+          end: 10,
+          duration: 100,
+          async buffer(uri) {
+            buffer = await fetch(uri)
+              .then((res) => res.arrayBuffer())
+              .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
+              .catch((e) => console.error(e));
+            this.duration = buffer.duration;
+            this.load();
+          },
+          load() {
+            const source = audioContext.createBufferSource();
+            source.buffer = buffer;
+            source.connect(audioContext.destination);
+            return source;
+          },
+          start(ev) {
+            const { key } = ev;
+            const x = parseInt(key);
+            if (isNaN(x)) return;
+            if (!keyState[key]) {
+              keyState[key] = true;
+              const t = Math.floor((this.begin + x * 0.4) * 100) / 100;
+              console.log(t);
+              source?.start(audioContext.currentTime, t);
+            }
+          },
+          stop(ev) {
+            const { key } = ev;
+            if (isNaN(parseInt(key))) return;
+            keyState[key] = false;
+            source?.stop();
+            source = this.load();
+          },
+        }));
+      });
+    </script>
+
+    <section x-data="sampler" x-init="buffer('/sound1.mp3')">
+      <p x-text="begin + ' - ' + end"></p>
+      <div
+        class="px-10"
+        @keydown.window="start($event)"
+        @keyup.window="stop($event)"
+      >
+        <label>
+          Begin:
+          <span x-text="begin"></span>
+          <div>
+            <input
+              x-model="begin"
+              type="range"
+              min="0"
+              :max="duration"
+              step="0.01"
+              class="w-full"
+            />
+          </div>
+        </label>
+      </div>
+    </section>
+
+    <h2>Audio</h2>
+  </body>
+</html>

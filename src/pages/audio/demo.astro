@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body>
+    <h1>Sampler</h1>
+
+    <h2>Audio</h2>
+    <button id="play">Play</button>
+
+    <script is:inline>
+      const audioContext = new (window.AudioContext ||
+        window.webkitAudioContext)();
+
+      const loadAudioBuffer = (uri) =>
+        fetch(uri)
+          .then((res) => res.arrayBuffer())
+          .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
+          .catch((e) => console.error(e));
+
+      const playBuffer = (buffer, t = 0) => {
+        const source = audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.connect(audioContext.destination);
+        source.start(audioContext.currentTime, t);
+        return source;
+      };
+
+      // get length of audio in seconds
+
+      let buffer, sourceA, sourceB;
+
+      loadAudioBuffer("/sound1.mp3").then((buf) => (buffer = buf));
+
+      const keys = {};
+      window.addEventListener("keydown", (ev) => {
+        const key = ev.key;
+        const x = parseInt(key);
+        if (isNaN(x)) {
+          if (key === "q") {
+            if (!keys[key]) {
+              sourceA = playBuffer(buffer, 80);
+              keys[key] = true;
+            }
+          }
+          return;
+        }
+
+        if (!keys[key]) {
+          sourceA = playBuffer(buffer, x);
+          keys[key] = true;
+        }
+      });
+      window.addEventListener("keyup", (ev) => {
+        const key = ev.key;
+        const x = parseInt(key);
+        if (isNaN(x)) {
+          keys[key] = false;
+          sourceA?.stop();
+          return;
+        }
+
+        keys[key] = false;
+        sourceA?.stop();
+      });
+    </script>
+  </body>
+</html>
