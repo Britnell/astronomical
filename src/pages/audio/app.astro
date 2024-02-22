@@ -1,5 +1,5 @@
 ---
-import Player from "../../react/player";
+import Player from "../../react/loader";
 ---
 
 <!doctype html>
@@ -9,6 +9,16 @@ import Player from "../../react/player";
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
   </head>
+  <style is:global>
+    :root {
+      --fg: #87a2c7;
+    }
+    body {
+      background: #090a19;
+      color: white;
+      font-family: "Nimbus Mono PS", "Courier New", monospace;
+    }
+  </style>
   <body>
     <Player client:only="react" />
   </body>
