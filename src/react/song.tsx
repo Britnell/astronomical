@@ -103,7 +103,7 @@ export default function Song({
           Add key :
           <input
             type="text"
-            className=" w-[100px] py-1 px-2  border border-black"
+            className=" w-[100px] py-1 px-2  border border-[var(--b2)] bg-transparent  "
             onChange={({ target }) => {
               callback("addkey", {
                 key: target.value,

@@ -111,7 +111,11 @@ export default function Loader() {
           <label>
             <span className="x">load from url :</span>
             <form onSubmit={loadFromUrl}>
-              <input type="text" name="url" className=" border border-black" />
+              <input
+                type="text"
+                name="url"
+                className=" bg-transparent border border-[var(--b2)] "
+              />
               <button>load</button>
             </form>
           </label>

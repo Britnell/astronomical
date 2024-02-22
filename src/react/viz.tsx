@@ -41,7 +41,7 @@ export function SampleWave({
     // begin drawing
     ctx.clearRect(0, 0, W, H);
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "#474dff";
+    ctx.strokeStyle = "#282dbd";
     ctx.beginPath();
 
     for (let x = 0; x < W; x++) {
@@ -65,7 +65,7 @@ export function SampleWave({
   return (
     <canvas
       ref={canvasRef}
-      className=" border border-[#474dff]  "
+      className=" border-r border-l border-[#282dbd] bg-[#282dbd] bg-opacity-5"
       width="800"
       height="100"
       // onClick={canvasClick}
@@ -112,7 +112,7 @@ export function Wave({
     // begin drawing
     ctx.clearRect(0, 0, W, H);
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "#474dff";
+    ctx.strokeStyle = "#282dbd";
     ctx.beginPath();
     let last = 0;
 
@@ -132,7 +132,7 @@ export function Wave({
   return (
     <canvas
       ref={canvasRef}
-      className=" border border-[#474dff]  "
+      className=" border-r border-l border-[#282dbd] bg-[#282dbd] bg-opacity-5  "
       width="800"
       height="100"
       onClick={canvasClick}
