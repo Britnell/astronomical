@@ -9,6 +9,16 @@ import {
 
 const keybounce: { [id: string]: boolean } = {};
 
+/* 
+  TODO
+  - delete key modal
+  - copy key
+  - sample speed
+  - sample edit (popup arrowkeys move beginning)
+  - click to seek
+  - zoom waveform
+  - [ ] Set sample length & play until end
+*/
 export default function Loader() {
   const [buffers, setBuffers] = useState<BufferState>({});
 
@@ -123,6 +133,7 @@ function Player({
   useEffect(() => {
     const keypress = (ev: KeyboardEvent) => {
       const key = ev.key;
+      if (!edit) return;
       if (!key.startsWith("Arrow")) return;
       ev.preventDefault();
 
@@ -155,7 +166,6 @@ function Player({
     switch (type) {
       case "addkey":
         const { key, song } = arg;
-        // TODO check if key assigned
         if (samples[key]?.active) return;
         setSamples((s) => ({
           ...s,
@@ -231,7 +241,7 @@ function Song({
   useEffect(() => {
     // calc wavebuffer for viz
     const audioData = buffer.getChannelData(0);
-    const chunkSize = buffer.sampleRate / 100;
+    const chunkSize = buffer.sampleRate / 1000;
     const chunks = audioData.length / chunkSize;
     let last = 0;
 
@@ -287,7 +297,7 @@ function Song({
   }, [samples, buffer]);
 
   return (
-    <div className="song px-8 my-20">
+    <div className="song px-8 my-40">
       <div>
         {wavebuffer ? (
           <Wave
@@ -395,7 +405,7 @@ function SampleWave({
     const samplepos = Math.floor(perc * wave.length);
     const W = canvasRef.current.width;
     const H = canvasRef.current.height;
-    const chunkSize = 1;
+    const chunkSize = 10;
 
     // begin drawing
     ctx.clearRect(0, 0, W, H);
