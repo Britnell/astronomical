@@ -6,16 +6,10 @@ import {
   useLayoutEffect,
 } from "react";
 
-declare global {
-  interface Window {
-    webkitAudioContext: typeof AudioContext;
-  }
-}
-
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const keybounce: { [id: string]: boolean } = {};
 
 export default function Loader() {
-  const [buffers, setBuffers] = useState<{ [name: string]: AudioBuffer }>({});
+  const [buffers, setBuffers] = useState<BufferState>({});
 
   const readFile = (file: File | undefined) => {
     if (!file) return;
@@ -35,6 +29,7 @@ export default function Loader() {
   };
 
   useEffect(() => {
+    // load files from db
     const load = async () => {
       const blobs = await samplesDbReadAll().catch((e) => {
         console.log(e);
@@ -42,7 +37,7 @@ export default function Loader() {
       });
       if (!blobs) return;
 
-      const srcs: { [k: string]: AudioBuffer } = {};
+      const srcs: BufferState = {};
       await Promise.all(
         Object.entries(blobs).map(async ([name, blob]) => {
           // load array from blob
@@ -56,60 +51,121 @@ export default function Loader() {
     load();
   }, []);
 
-  const callbacks = (type: string, arg: any) => {
-    if (type === "delete") {
-      // rmv in state
-      const _buffers = { ...buffers };
-      delete _buffers[arg];
-      setBuffers(_buffers);
-      // rmv in local storage
-      samplesDbRemove(arg);
-    }
+  const removeBuffer = (bufferid: string) => {
+    const _buffers = { ...buffers };
+    delete _buffers[bufferid];
+    setBuffers(_buffers);
+    // rmv in local storage
+    samplesDbRemove(bufferid);
   };
 
   return (
     <div>
       <header>
         <h1>Sampler</h1>
-      </header>
-      <section>
         <h2>Add source files</h2>
-        <label className=" flex  gap-6">
-          <span className=" ">Use local file :</span>
-          <input
-            type="file"
-            accept="audio/mp3"
-            onChange={(ev) => {
-              const ip = ev.target as HTMLInputElement;
-              readFile(ip.files?.[0]);
-            }}
-          />
-        </label>
-        <label>
-          <span className="x">Use url :</span>
-          <input type="text" name="url" />
-        </label>
-      </section>
-      <main>
-        {Object.entries(buffers).map(([name, buffer]) => (
-          <Song key={name} name={name} buffer={buffer} callback={callbacks} />
-        ))}
-        {/* <button onClick={() => {}}>click</button> */}
-      </main>
+        <div className=" grid grid-cols-2 gap-10">
+          <label className=" flex  gap-6">
+            <span className=" ">load local file :</span>
+            <input
+              type="file"
+              accept="audio/mp3"
+              onChange={(ev) => {
+                const ip = ev.target as HTMLInputElement;
+                readFile(ip.files?.[0]);
+              }}
+            />
+          </label>
+          <label>
+            <span className="x">load from url :</span>
+            <input type="text" name="url" className=" border border-black" />
+          </label>
+        </div>
+      </header>
+      <Player buffers={buffers} removeBuffer={removeBuffer} />
     </div>
   );
 }
 
+function Player({
+  buffers,
+  removeBuffer,
+}: {
+  buffers: BufferState;
+  removeBuffer: (id: string) => void;
+}) {
+  const [samples, setSamples] = useLocalStorageState<SamplesT>(
+    "sample-keys",
+    {}
+  );
+
+  // UseEffect - arrow keys, adjust sample begin ?
+  useEffect(() => {
+    const keypress = (ev: KeyboardEvent) => {
+      const key = ev.key;
+      if (!key.includes("Arrow")) return;
+
+      console.log(key);
+    };
+    window.addEventListener("keydown", keypress);
+    return () => window.removeEventListener("keydown", keypress);
+  }, [samples]);
+
+  const callbacks = (type: string, arg: any) => {
+    switch (type) {
+      case "addkey":
+        const { key, song } = arg;
+        // TODO check if key assigned
+        if (samples[key]?.active) return;
+        setSamples((s) => ({
+          ...s,
+          [key]: {
+            key,
+            begin: 0,
+            active: true,
+            bufferid: song,
+          },
+        }));
+        break;
+      default:
+        console.log("=>", type, arg);
+    }
+  };
+
+  return (
+    <main>
+      {Object.entries(buffers).map(([name, buffer]) => (
+        <Song
+          key={name}
+          bufferId={name}
+          buffer={buffer}
+          callback={callbacks}
+          samples={samples}
+          removeBuffer={removeBuffer}
+        />
+      ))}
+      {/* <button onClick={() => {}}>click</button> */}
+    </main>
+  );
+}
+
 function Song({
-  name,
+  bufferId,
   buffer,
   callback,
+  removeBuffer,
+  samples,
 }: {
-  name: string;
+  bufferId: string;
   buffer: AudioBuffer;
   callback: (type: string, val: any) => void;
+  samples: SamplesT;
+  removeBuffer: (id: string) => void;
 }) {
   const [wavebuffer, setWavebuffer] = useState<number[] | null>(null);
+  const sources = useRef<{ [id: string]: AudioBufferSourceNode | null }>({});
+  const edit = null;
+  const speed = 1.0;
 
   useEffect(() => {
     // calc wavebuffer for viz
@@ -130,12 +186,43 @@ function Song({
     setWavebuffer(wave);
   }, [buffer]);
 
+  useEffect(() => {
+    // listen to keys & play samples
+    const keydown = (ev: KeyboardEvent) => {
+      const key = ev.key;
+      const sample = samples[key];
+
+      if (ev.ctrlKey) return; // avoid ctrl + f
+      if (!sample?.active) return; // not a sample key
+      if (sample.bufferid !== bufferId) return; // not for this sample
+      if (keybounce[key]) return; // key being held
+      // load & play
+      const source = loadSource(buffer, speed);
+      source?.start(audioContext.currentTime, samples[key].begin);
+      sources.current[key] = source;
+      keybounce[key] = true;
+    };
+
+    const keyup = ({ key }: KeyboardEvent) => {
+      const sample = samples[key];
+      if (!sample?.active) return;
+      if (sample.bufferid !== bufferId) return;
+      // stop
+      sources.current[key]?.stop();
+      keybounce[key] = false;
+    };
+
+    window.addEventListener("keydown", keydown);
+    window.addEventListener("keyup", keyup);
+
+    return () => {
+      window.removeEventListener("keydown", keydown);
+      window.removeEventListener("keyup", keyup);
+    };
+  }, [samples, buffer]);
+
   return (
     <div className="song px-8 my-20">
-      <div className=" flex justify-between">
-        <h2 className=" mb-3">{name}</h2>
-        <button onClick={() => callback("delete", name)}>remove</button>
-      </div>
       <div>
         {wavebuffer ? (
           <Wave
@@ -149,6 +236,55 @@ function Song({
           <p>Loading...</p>
         )}
       </div>
+
+      <div className=" py-3 flex items-center justify-between">
+        <h2 className=" text-lg">{bufferId}</h2>
+
+        <label>
+          Add key :
+          <input
+            type="text"
+            className=" w-[100px] py-1 px-2  border border-black"
+            onChange={({ target }) => {
+              callback("addkey", {
+                key: target.value,
+                song: bufferId,
+              });
+              target.value = "";
+            }}
+            placeholder="add key"
+          />
+        </label>
+
+        <button onClick={() => removeBuffer(bufferId)}>remove</button>
+      </div>
+
+      <div className=" my-8 px-8 grid grid-cols-[repeat(auto-fit,160px)] gap-3 ">
+        {Object.values(samples).map(({ key, begin, active }) => (
+          <div
+            className={
+              " p-3 aspect-square " +
+              (edit === key ? " bg-blue-300" : " bg-gray-300")
+            }
+            key={key}
+          >
+            <h2 className=" text-2xl">{key}</h2>
+            <p>{begin.toPrecision(3)}s</p>
+            <div className="x">
+              <button
+                // onClick={() => setEdit(edit === key ? null : key)}
+                className=" px-2 py-1 "
+              >
+                edit
+              </button>
+            </div>
+            <div className="x">
+              <button onClick={() => ({ type: "delete", val: key })}>x</button>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div></div>
     </div>
   );
 }
@@ -329,3 +465,50 @@ function samplesDbReadAll(): Promise<{ [key: string]: Blob }> {
     };
   });
 }
+
+function useLocalStorageState<T>(key: string, initial: object) {
+  const [state, setState] = useState<T>(() => {
+    try {
+      const str = localStorage.getItem(key);
+      if (!str) return initial;
+      return JSON.parse(str);
+    } catch (e) {
+      return initial;
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem(key, JSON.stringify(state));
+  }, [state]);
+
+  return [state, setState] as const;
+}
+
+const loadSource = (buffer: AudioBuffer | void, speed: number = 1.0) => {
+  if (!buffer) return null;
+  const source = audioContext.createBufferSource();
+  source.buffer = buffer;
+  source.playbackRate.value = speed;
+  source.connect(audioContext.destination);
+  return source;
+};
+
+declare global {
+  interface Window {
+    webkitAudioContext: typeof AudioContext;
+  }
+}
+
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+type SampleT = {
+  key: string;
+  begin: number;
+  active: boolean;
+  bufferid: string;
+};
+type SamplesT = {
+  [id: string]: SampleT;
+};
+
+type BufferState = { [name: string]: AudioBuffer };
