@@ -22,7 +22,6 @@ export function SampleWave({
     const parent = canvasRef.current.parentElement?.getBoundingClientRect();
     if (!parent) return;
     canvasRef.current.width = parent?.width;
-    canvasRef.current.height = parent?.height;
   }, [wave]);
 
   useEffect(() => {
@@ -42,7 +41,7 @@ export function SampleWave({
     // begin drawing
     ctx.clearRect(0, 0, W, H);
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "#000";
+    ctx.strokeStyle = "#474dff";
     ctx.beginPath();
 
     for (let x = 0; x < W; x++) {
@@ -66,8 +65,8 @@ export function SampleWave({
   return (
     <canvas
       ref={canvasRef}
-      className=" border border-[#87a2c7] bg-[#87a2c7] "
-      width="100"
+      className=" border border-[#474dff]  "
+      width="800"
       height="100"
       // onClick={canvasClick}
     />
@@ -95,7 +94,7 @@ export function Wave({
 
   useLayoutEffect(() => {
     if (!canvasRef.current) return;
-    canvasRef.current.width = window.innerWidth - 48;
+    canvasRef.current.width = window.innerWidth - 64 - 18;
   }, []);
 
   useEffect(() => {
@@ -112,10 +111,10 @@ export function Wave({
 
     // begin drawing
     ctx.clearRect(0, 0, W, H);
-    let last = 0;
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "rgb(0 0 0)";
+    ctx.strokeStyle = "#474dff";
     ctx.beginPath();
+    let last = 0;
 
     for (let x = 1; x < W; x++) {
       const to = Math.floor(chunkSize * x);
@@ -133,9 +132,9 @@ export function Wave({
   return (
     <canvas
       ref={canvasRef}
-      className=" border border-[var(--fg)] bg-[var(--fg)] "
+      className=" border border-[#474dff]  "
       width="800"
-      height="120"
+      height="100"
       onClick={canvasClick}
     />
   );

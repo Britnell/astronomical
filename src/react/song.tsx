@@ -128,8 +128,8 @@ export default function Song({
             <div className=" flex gap-3" key={key}>
               <div
                 className={
-                  " w-36 h-36 p-3 flex flex-col gap-2 " +
-                  (editing ? " bg-blue-300" : " bg-[var(--fg)]")
+                  " w-[180px] h-36 p-3 flex flex-col gap-2 " +
+                  (editing ? " bg-blue-300" : " bg-[var(--b2)]")
                 }
               >
                 <div className=" flex items-end justify-between">
