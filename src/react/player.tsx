@@ -152,6 +152,9 @@ function Player({
         if (edit === arg) setEdit("");
         else setEdit(arg);
         break;
+      case "seek":
+        // seek sample to pos
+        break;
       default:
         console.log("=>", type, arg);
     }
@@ -270,9 +273,7 @@ function Song({
           <Wave
             buffer={buffer}
             wave={wavebuffer}
-            onclick={(t) => {
-              console.log(" seek ", t);
-            }}
+            onclick={(t) => callback("seek", t)}
           />
         ) : (
           <p>Loading...</p>
@@ -301,42 +302,115 @@ function Song({
         <button onClick={() => removeBuffer(bufferId)}>remove</button>
       </div>
 
-      <div className=" my-8 px-8 grid grid-cols-[repeat(auto-fit,160px)] gap-3 ">
-        {Object.values(samples).map(
-          ({ key, begin, active, bufferid: songid }) => {
-            if (!active) return null;
-            if (bufferId !== songid) return null;
-            const editing = edit === key;
-            return (
+      <div className=" my-8 px-8 flex flex-col gap-3 ">
+        {Object.values(samples).map((sample) => {
+          const { key, begin, active, bufferid: songid } = sample;
+          if (!active) return null;
+          if (bufferId !== songid) return null;
+          const editing = edit === key;
+          return (
+            <div className=" flex gap-3" key={key}>
               <div
                 className={
-                  " p-3 aspect-square " +
+                  " w-36 h-36 p-3 flex flex-col gap-2 " +
                   (editing ? " bg-blue-300" : " bg-gray-300")
                 }
-                key={key}
               >
-                <h2 className=" text-2xl">{key}</h2>
-                <p>{begin.toPrecision(4)}s</p>
-                <div className="x">
-                  <button
-                    onClick={() => callback("editkey", key)}
-                    className=" px-2 py-4 w-full bg-black bg-opacity-10 hover:bg-opacity-15 "
-                  >
-                    {editing ? "done" : "edit"}
-                  </button>
+                <div className=" flex items-end justify-between">
+                  <h2 className=" text-2xl">{key}</h2>
+                  <p>{begin.toPrecision(4)}s</p>
                 </div>
+                <button
+                  onClick={() => callback("editkey", key)}
+                  className=" grow  w-full bg-black bg-opacity-10 hover:bg-opacity-15 "
+                >
+                  {editing ? "done" : "edit"}
+                </button>
                 <div className="x">
                   <button onClick={() => ({ type: "delete", val: key })}>
                     x
                   </button>
                 </div>
               </div>
-            );
-          }
-        )}
+              <div className=" grow ">
+                <SampleWave sample={sample} wave={wavebuffer} buffer={buffer} />
+              </div>
+            </div>
+          );
+        })}
       </div>
       <div></div>
     </div>
+  );
+}
+
+function SampleWave({
+  sample,
+  wave,
+  buffer,
+}: {
+  sample: SampleT;
+  wave: number[] | null;
+  buffer: AudioBuffer;
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useLayoutEffect(() => {
+    if (!canvasRef.current) return;
+    const parent = canvasRef.current.parentElement?.getBoundingClientRect();
+    if (!parent) return;
+    canvasRef.current.width = parent?.width;
+    canvasRef.current.height = parent?.height;
+  }, [wave]);
+
+  useEffect(() => {
+    if (!wave) return;
+    if (!canvasRef.current) return;
+
+    const ctx = canvasRef.current.getContext("2d");
+    if (!ctx) return;
+
+    console.log("redraw ", sample.bufferid);
+
+    // draf from wavepos - x
+    const perc = sample.begin / buffer.duration;
+    const samplepos = Math.floor(perc * wave.length);
+    const W = canvasRef.current.width;
+    const H = canvasRef.current.height;
+    const chunkSize = 1;
+
+    // begin drawing
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "rgb(0 0 0)";
+    ctx.beginPath();
+
+    for (let x = 0; x < W; x++) {
+      const from = samplepos + x * chunkSize;
+      const slice = wave.slice(from, from + chunkSize);
+      const max = findmax(slice);
+      const y = H * max * 1.0;
+      if (x === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  }, [wave, sample]);
+
+  if (!wave)
+    return (
+      <div>
+        <p>Loading...</p>
+      </div>
+    );
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className=" border border-gray-400"
+      width="100"
+      height="100"
+      // onClick={canvasClick}
+    />
   );
 }
 
