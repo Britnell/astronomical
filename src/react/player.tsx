@@ -32,7 +32,7 @@ export default function Loader() {
     // load files from db
     const load = async () => {
       const blobs = await samplesDbReadAll().catch((e) => {
-        console.log(e);
+        console.error(e);
         return;
       });
       if (!blobs) return;
@@ -94,22 +94,42 @@ function Player({
   buffers: BufferState;
   removeBuffer: (id: string) => void;
 }) {
+  const [edit, setEdit] = useState("");
   const [samples, setSamples] = useLocalStorageState<SamplesT>(
     "sample-keys",
     {}
   );
 
-  // UseEffect - arrow keys, adjust sample begin ?
   useEffect(() => {
     const keypress = (ev: KeyboardEvent) => {
       const key = ev.key;
-      if (!key.includes("Arrow")) return;
+      if (!key.startsWith("Arrow")) return;
+      ev.preventDefault();
 
-      console.log(key);
+      const sample = samples[edit];
+      if (!sample?.active) return;
+
+      const fine = ev.shiftKey ? 0.5 : 1;
+      // const ctrl = ev.ctrlKey;
+      const keyVals: { [k: string]: number } = {
+        ArrowUp: 0.01,
+        ArrowDown: -0.01,
+        ArrowLeft: -0.1,
+        ArrowRight: 0.1,
+      };
+      if (!keyVals[key]) return;
+      const x = keyVals[key] * fine;
+      setSamples((s) => ({
+        ...s,
+        [edit]: {
+          ...sample,
+          begin: limit(sample.begin + x, 0, buffers[sample.bufferid].duration),
+        },
+      }));
     };
     window.addEventListener("keydown", keypress);
     return () => window.removeEventListener("keydown", keypress);
-  }, [samples]);
+  }, [samples, edit]);
 
   const callbacks = (type: string, arg: any) => {
     switch (type) {
@@ -121,15 +141,31 @@ function Player({
           ...s,
           [key]: {
             key,
+            bufferid: song,
             begin: 0,
             active: true,
-            bufferid: song,
           },
         }));
+        break;
+      case "editkey":
+        if (!samples[arg]?.active) return;
+        if (edit === arg) setEdit("");
+        else setEdit(arg);
         break;
       default:
         console.log("=>", type, arg);
     }
+  };
+
+  const removeSample = (id: string) => {
+    // remove keys
+    const _samples = { ...samples };
+    Object.values(_samples).forEach((sample) => {
+      if (sample.bufferid === id) sample.active = false;
+    });
+    setSamples(_samples);
+    // rmv buffer
+    removeBuffer(id);
   };
 
   return (
@@ -138,10 +174,11 @@ function Player({
         <Song
           key={name}
           bufferId={name}
+          edit={edit}
           buffer={buffer}
           callback={callbacks}
           samples={samples}
-          removeBuffer={removeBuffer}
+          removeBuffer={removeSample}
         />
       ))}
       {/* <button onClick={() => {}}>click</button> */}
@@ -155,8 +192,10 @@ function Song({
   callback,
   removeBuffer,
   samples,
+  edit,
 }: {
   bufferId: string;
+  edit: string;
   buffer: AudioBuffer;
   callback: (type: string, val: any) => void;
   samples: SamplesT;
@@ -164,7 +203,6 @@ function Song({
 }) {
   const [wavebuffer, setWavebuffer] = useState<number[] | null>(null);
   const sources = useRef<{ [id: string]: AudioBufferSourceNode | null }>({});
-  const edit = null;
   const speed = 1.0;
 
   useEffect(() => {
@@ -190,16 +228,17 @@ function Song({
     // listen to keys & play samples
     const keydown = (ev: KeyboardEvent) => {
       const key = ev.key;
-      const sample = samples[key];
 
+      if (ev.repeat) return;
       if (ev.ctrlKey) return; // avoid ctrl + f
+      if (keybounce[key]) return; // key being held
+
+      const sample = samples[key];
       if (!sample?.active) return; // not a sample key
       if (sample.bufferid !== bufferId) return; // not for this sample
-      if (keybounce[key]) return; // key being held
       // load & play
-      const source = loadSource(buffer, speed);
-      source?.start(audioContext.currentTime, samples[key].begin);
-      sources.current[key] = source;
+      // const source = loadSource(buffer, speed);
+      sources.current[key]?.start(audioContext.currentTime, samples[key].begin);
       keybounce[key] = true;
     };
 
@@ -209,6 +248,9 @@ function Song({
       if (sample.bufferid !== bufferId) return;
       // stop
       sources.current[key]?.stop();
+      // load next
+      const source = loadSource(buffer, speed);
+      sources.current[key] = source;
       keybounce[key] = false;
     };
 
@@ -260,29 +302,38 @@ function Song({
       </div>
 
       <div className=" my-8 px-8 grid grid-cols-[repeat(auto-fit,160px)] gap-3 ">
-        {Object.values(samples).map(({ key, begin, active }) => (
-          <div
-            className={
-              " p-3 aspect-square " +
-              (edit === key ? " bg-blue-300" : " bg-gray-300")
-            }
-            key={key}
-          >
-            <h2 className=" text-2xl">{key}</h2>
-            <p>{begin.toPrecision(3)}s</p>
-            <div className="x">
-              <button
-                // onClick={() => setEdit(edit === key ? null : key)}
-                className=" px-2 py-1 "
+        {Object.values(samples).map(
+          ({ key, begin, active, bufferid: songid }) => {
+            if (!active) return null;
+            if (bufferId !== songid) return null;
+            const editing = edit === key;
+            return (
+              <div
+                className={
+                  " p-3 aspect-square " +
+                  (editing ? " bg-blue-300" : " bg-gray-300")
+                }
+                key={key}
               >
-                edit
-              </button>
-            </div>
-            <div className="x">
-              <button onClick={() => ({ type: "delete", val: key })}>x</button>
-            </div>
-          </div>
-        ))}
+                <h2 className=" text-2xl">{key}</h2>
+                <p>{begin.toPrecision(4)}s</p>
+                <div className="x">
+                  <button
+                    onClick={() => callback("editkey", key)}
+                    className=" px-2 py-4 w-full bg-black bg-opacity-10 hover:bg-opacity-15 "
+                  >
+                    {editing ? "done" : "edit"}
+                  </button>
+                </div>
+                <div className="x">
+                  <button onClick={() => ({ type: "delete", val: key })}>
+                    x
+                  </button>
+                </div>
+              </div>
+            );
+          }
+        )}
       </div>
       <div></div>
     </div>
@@ -383,7 +434,7 @@ async function getDbStore(): Promise<IDBObjectStore | string> {
       const db = req.result;
       const transaction = db.transaction([STORE_NAME], "readwrite");
       transaction.onerror = (ev) => {
-        console.log(ev);
+        console.error(ev);
         reject("transaction error ");
       };
 
@@ -392,7 +443,7 @@ async function getDbStore(): Promise<IDBObjectStore | string> {
     };
 
     req.onerror = (ev) => {
-      console.log(ev);
+      console.error(ev);
       reject("db req error ");
     };
   });
@@ -410,8 +461,7 @@ function samplesDbWrite(blob: Blob, filename: string) {
       resolve({ success: true });
     };
     req.onerror = (ev) => {
-      console.log(ev);
-
+      console.error(ev);
       reject("req error ");
     };
   });
@@ -429,7 +479,7 @@ function samplesDbRemove(filename: string) {
       resolve({ success: true });
     };
     req.onerror = (ev) => {
-      console.log(ev);
+      console.error(ev);
       reject("req error ");
     };
   });
@@ -446,7 +496,7 @@ function samplesDbReadAll(): Promise<{ [key: string]: Blob }> {
     const req = objectStore.openCursor(); // Use a cursor for large datasets
 
     req.onerror = (ev) => {
-      console.log(ev);
+      console.error(ev);
       reject(" cursor error ");
     };
 
@@ -507,8 +557,20 @@ type SampleT = {
   active: boolean;
   bufferid: string;
 };
+
 type SamplesT = {
-  [id: string]: SampleT;
+  [id: string]: {
+    key: string;
+    begin: number;
+    active: boolean;
+    bufferid: string;
+  };
 };
 
 type BufferState = { [name: string]: AudioBuffer };
+
+const limit = (x: number, min: number, max: number) => {
+  if (x < min) return min;
+  if (x > max) return max;
+  return x;
+};

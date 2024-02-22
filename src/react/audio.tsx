@@ -84,45 +84,7 @@ function storeFileInIndexedDB(blob: Blob, filename: string) {
     };
   };
 }
-
-export default function Audio() {
-  const [files, setFiles] = useState<File[]>([]);
-
-  console.log(files);
-
-  const readFile = (file: File | undefined) => {
-    if (!file) return;
-    // setFiles((f) => [...f, file]);
-    console.log(file);
-    dbWrite(file.name, file);
-
-    // const reader = new FileReader();
-    // reader.onload = async (ev) => {
-    //   const arr = ev.target?.result as ArrayBuffer;
-    //   const buff = await audioContext.decodeAudioData(arr);
-    //   // setBuffer(buff)
-    //   console.log(buff);
-    // };
-    // reader.readAsArrayBuffer(file);
-  };
-
-  return (
-    <div>
-      <div>
-        <input
-          type="file"
-          accept="audio/mp3"
-          onChange={(ev) => {
-            const ip = ev.target as HTMLInputElement;
-            readFile(ip.files?.[0]);
-          }}
-        />
-      </div>
-    </div>
-  );
-}
-
-function Sound() {
+export default function Sound() {
   const [file, setfile] = useState("/sound1.mp3");
   const [buffer, setBuffer] = useState<AudioBuffer>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
