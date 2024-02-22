@@ -4,6 +4,7 @@ import {
   useState,
   type MouseEventHandler,
   useLayoutEffect,
+  type FormEvent,
 } from "react";
 
 const keybounce: { [id: string]: boolean } = {};
@@ -11,7 +12,35 @@ const keybounce: { [id: string]: boolean } = {};
 export default function Loader() {
   const [buffers, setBuffers] = useState<BufferState>({});
 
-  const readFile = (file: File | undefined) => {
+  useEffect(() => {
+    // load files from db
+    const load = async () => {
+      const blobs = await samplesDbReadAll().catch((e) => {
+        console.error(e);
+        return;
+      });
+      if (!blobs) return;
+
+      const srcs: BufferState = {};
+      await Promise.all(
+        Object.entries(blobs).map(async ([name, blob]) => {
+          // load array from blob
+          const arrayBuffer = await blob.arrayBuffer();
+          const buffer = await audioContext
+            .decodeAudioData(arrayBuffer)
+            .catch((err) => console.error("err decode", err, name));
+          if (!buffer) return;
+          srcs[name] = buffer;
+          return buffer;
+        })
+      );
+
+      setBuffers(srcs);
+    };
+    load();
+  }, []);
+
+  const loadFile = (file: File | undefined) => {
     if (!file) return;
 
     const reader = new FileReader();
@@ -28,35 +57,23 @@ export default function Loader() {
     reader.readAsArrayBuffer(file);
   };
 
-  useEffect(() => {
-    // load files from db
-    const load = async () => {
-      const blobs = await samplesDbReadAll().catch((e) => {
-        console.error(e);
-        return;
-      });
-      if (!blobs) return;
-
-      const srcs: BufferState = {};
-      await Promise.all(
-        Object.entries(blobs).map(async ([name, blob]) => {
-          // load array from blob
-          const arrayBuffer = await blob.arrayBuffer();
-          const buffer = await audioContext.decodeAudioData(arrayBuffer);
-          srcs[name] = buffer;
-        })
-      );
-      setBuffers(srcs);
-    };
-    load();
-  }, []);
-
   const removeBuffer = (bufferid: string) => {
     const _buffers = { ...buffers };
     delete _buffers[bufferid];
     setBuffers(_buffers);
     // rmv in local storage
     samplesDbRemove(bufferid);
+  };
+
+  const loadFromUrl = async (ev: FormEvent) => {
+    ev.preventDefault();
+    const uri = (ev.target as HTMLFormElement).url.value;
+    console.log({ uri });
+    const blob = await fetch(uri).then((res) => res.blob());
+    const arrayBuffer = await blob.arrayBuffer();
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+    setBuffers((s) => ({ ...s, [uri]: audioBuffer }));
+    await samplesDbWrite(blob, uri).catch((err) => console.error(err));
   };
 
   return (
@@ -72,13 +89,16 @@ export default function Loader() {
               accept="audio/mp3"
               onChange={(ev) => {
                 const ip = ev.target as HTMLInputElement;
-                readFile(ip.files?.[0]);
+                loadFile(ip.files?.[0]);
               }}
             />
           </label>
           <label>
             <span className="x">load from url :</span>
-            <input type="text" name="url" className=" border border-black" />
+            <form onSubmit={loadFromUrl}>
+              <input type="text" name="url" className=" border border-black" />
+              <button>load</button>
+            </form>
           </label>
         </div>
       </header>
@@ -370,8 +390,6 @@ function SampleWave({
     const ctx = canvasRef.current.getContext("2d");
     if (!ctx) return;
 
-    console.log("redraw ", sample.bufferid);
-
     // draf from wavepos - x
     const perc = sample.begin / buffer.duration;
     const samplepos = Math.floor(perc * wave.length);
@@ -389,7 +407,7 @@ function SampleWave({
       const from = samplepos + x * chunkSize;
       const slice = wave.slice(from, from + chunkSize);
       const max = findmax(slice);
-      const y = H * max * 1.0;
+      const y = H * (1 - max * 1.0);
       if (x === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
     }
@@ -471,7 +489,7 @@ function Wave({
       const slice = wave.slice(last, to);
 
       const max = findmax(slice);
-      const y = H * max * 1.0;
+      const y = H * (1 - max * 1.0);
       last = to + 1;
       if (x === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
