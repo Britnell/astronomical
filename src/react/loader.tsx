@@ -93,35 +93,61 @@ export default function Loader() {
 
   return (
     <div>
-      <header>
-        <h1>Sampler</h1>
-        <h2>Add source files</h2>
-        <div className=" grid grid-cols-2 gap-10">
-          <label className=" flex  gap-6">
-            <span className=" ">load local file :</span>
-            <input
-              type="file"
-              accept="audio/mp3"
-              onChange={(ev) => {
-                const ip = ev.target as HTMLInputElement;
-                loadFile(ip.files?.[0]);
-              }}
-            />
-          </label>
-          <label>
-            <span className="x">load from url :</span>
-            <form onSubmit={loadFromUrl}>
+      <header className=" max-w-[1000px] mx-auto">
+        <h1 className=" my-2 text-2xl">Audio-Sampler</h1>
+        <div className=" mt-4">
+          <h2 className=" text-xl">Add source files</h2>
+          <div className=" grid grid-cols-2 gap-10">
+            <label className=" flex gap-y-2 flex-col ">
+              <span>load local file :</span>
               <input
-                type="text"
-                name="url"
-                className=" bg-transparent border border-[var(--b2)] "
+                type="file"
+                accept="audio/mp3"
+                onChange={(ev) => {
+                  const ip = ev.target as HTMLInputElement;
+                  loadFile(ip.files?.[0]);
+                }}
               />
-              <button>load</button>
-            </form>
-          </label>
+            </label>
+            <label className=" flex gap-y-2 flex-col ">
+              <span>load from url :</span>
+              <form onSubmit={loadFromUrl}>
+                <input
+                  type="text"
+                  name="url"
+                  className=" bg-transparent border border-[var(--b2)] "
+                />
+                <button>load</button>
+              </form>
+            </label>
+          </div>
         </div>
       </header>
       <Player buffers={buffers} removeBuffer={removeBuffer} />
+      <footer className=" mt-[200px] max-w-[1000px] mx-auto">
+        <p className=" my-3">
+          NOTE - samples are loaded when the key is released - so it will only
+          play on the 2nd time a button is pushed. For now this is not a bug,
+          but optimisation shortcut.
+        </p>
+        <p>
+          DO NOT USE WITH BLUETOOTH, only wired speakers. BT speakers can add
+          extra delay and ruin the responsiveness.
+        </p>
+        <p>Made for the web & OS - </p>
+        <p className=" my-3 text-center">
+          Made for the web & OS, with 💙, by Britnell - &nbsp;
+          <a
+            href="https://github.com/Britnell/astro-gym/blob/main/src/react/loader.tsx"
+            target="_blank"
+            rel="noreferrer"
+            className=" underline"
+          >
+            see github
+          </a>{" "}
+          - feedback welcome
+        </p>
+      </footer>
     </div>
   );
 }

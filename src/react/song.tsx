@@ -137,7 +137,7 @@ export default function Song({
         />
       </div>
 
-      <div className=" my-8 px-8 flex flex-col gap-3 ">
+      <div className=" my-8 pl-20 flex flex-col gap-3 ">
         {Object.values(samples).map((sample) => {
           const { key, begin, active, bufferid: songid } = sample;
           if (!active) return null;

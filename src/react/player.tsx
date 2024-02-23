@@ -114,7 +114,7 @@ export default function Player({
   const closeModal = () => setModal(null);
 
   return (
-    <main>
+    <main className=" min-h-[calc(100vh-600px)]">
       {Object.entries(buffers).map(([name, buffer]) => (
         <Song
           key={name}
@@ -152,6 +152,7 @@ export default function Player({
             <div className="flex gap-2">
               <input
                 name="copykey"
+                placeholder="Press key to copy to"
                 onChange={({ target }) => {
                   if (!modal) return;
                   duplicateKey(modal.val, target.value);
