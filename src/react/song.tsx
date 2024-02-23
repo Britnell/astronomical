@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { SamplesT } from "./player";
+import { useLocalStorageState, type SamplesT } from "./player";
 import { SampleWave, Wave, findmax } from "./viz";
 import { audioContext, loadSource } from "./loader";
 
@@ -22,7 +22,7 @@ export default function Song({
 }) {
   const [wavebuffer, setWavebuffer] = useState<number[] | null>(null);
   const sources = useRef<{ [id: string]: AudioBufferSourceNode | null }>({});
-  const speed = 1.0;
+  const [speed, setSpeed] = useLocalStorageState(`speed-${bufferId}`, "1.0");
 
   useEffect(() => {
     // calc wavebuffer for viz
@@ -55,8 +55,7 @@ export default function Song({
       const sample = samples[key];
       if (!sample?.active) return; // not a sample key
       if (sample.bufferid !== bufferId) return; // not for this sample
-      // load & play
-      // const source = loadSource(buffer, speed);
+      // play
       sources.current[key]?.start(audioContext.currentTime, samples[key].begin);
       keybounce[key] = true;
     };
@@ -68,7 +67,8 @@ export default function Song({
       // stop
       sources.current[key]?.stop();
       // load next
-      const source = loadSource(buffer, speed);
+      const s = parseFloat(speed);
+      const source = loadSource(buffer, isNaN(s) ? 1.0 : s);
       sources.current[key] = source;
       keybounce[key] = false;
     };
@@ -80,7 +80,7 @@ export default function Song({
       window.removeEventListener("keydown", keydown);
       window.removeEventListener("keyup", keyup);
     };
-  }, [samples, buffer]);
+  }, [samples, buffer, speed]);
 
   return (
     <div className="song px-8 my-40">
@@ -115,7 +115,26 @@ export default function Song({
           />
         </label>
 
+        {/* remove sample modal */}
         <button onClick={() => removeBuffer(bufferId)}>remove</button>
+      </div>
+
+      <div>
+        <div>
+          <label htmlFor="speed">Sample Speed :</label>
+          <span>x {speed}</span>
+        </div>
+        <input
+          id="speed"
+          name="speed"
+          type="range"
+          min="0.5"
+          max="2"
+          step="0.02"
+          className="w-full max-w-[400px]"
+          value={speed}
+          onChange={({ target }) => setSpeed(target.value)}
+        />
       </div>
 
       <div className=" my-8 px-8 flex flex-col gap-3 ">

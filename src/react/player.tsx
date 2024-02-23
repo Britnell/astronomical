@@ -198,7 +198,7 @@ const Modal = ({
   return <dialog ref={ref}>{children}</dialog>;
 };
 
-function useLocalStorageState<T>(key: string, initial: object) {
+export function useLocalStorageState<T>(key: string, initial: T) {
   const [state, setState] = useState<T>(() => {
     try {
       const str = localStorage.getItem(key);

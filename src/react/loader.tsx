@@ -3,8 +3,8 @@ import Player from "./player";
 
 /* 
   TODO
-  - delete key modal
-  - copy key
+  -X delete key modal
+  -X copy key
   - sample speed
   - sample edit (popup arrowkeys move beginning)
   - click to seek
