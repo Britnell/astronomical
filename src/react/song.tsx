@@ -143,9 +143,7 @@ export default function Song({
                   {editing ? "done" : "edit"}
                 </button>
                 <div className="x">
-                  <button onClick={() => ({ type: "delete", val: key })}>
-                    x
-                  </button>
+                  <button onClick={() => callback("delete", key)}>x</button>
                 </div>
               </div>
               <div className=" grow ">

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { BufferState } from "./loader";
 import Song from "./song";
 
@@ -14,6 +14,10 @@ export default function Player({
     "sample-keys",
     {}
   );
+  const [modal, setModal] = useState<{ type: string; val: string } | null>({
+    type: "",
+    val: "",
+  });
 
   useEffect(() => {
     const keypress = (ev: KeyboardEvent) => {
@@ -70,6 +74,13 @@ export default function Player({
       case "seek":
         // seek sample to pos
         break;
+      case "delete":
+        //
+        setModal({
+          type: "deletekey",
+          val: arg,
+        });
+        break;
       default:
         console.log("=>", type, arg);
     }
@@ -86,8 +97,36 @@ export default function Player({
     removeBuffer(id);
   };
 
+  const removeKey = (key: string) => {
+    const smpl = samples[key];
+    setSamples((s) => ({ ...s, [key]: { ...smpl, active: false } }));
+  };
+
+  const closeModal = () => setModal(null);
+
   return (
     <main>
+      <Modal isOpen={modal?.type === "deletekey"}>
+        {
+          <div className="asd">
+            <p>Remove sample key {modal?.val}</p>
+            <div className="flex gap-2">
+              <button className=" bg-gray-300" onClick={closeModal}>
+                cancel
+              </button>
+              <button
+                className=" bg-gray-300"
+                onClick={() => {
+                  modal?.val && removeKey(modal?.val);
+                  closeModal();
+                }}
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        }
+      </Modal>
       {Object.entries(buffers).map(([name, buffer]) => (
         <Song
           key={name}
@@ -103,6 +142,23 @@ export default function Player({
     </main>
   );
 }
+
+const Modal = ({
+  children,
+  isOpen,
+}: {
+  children: ReactNode;
+  isOpen: boolean;
+}) => {
+  const ref = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    if (isOpen) ref.current.showModal();
+    else ref.current.close();
+  }, [isOpen]);
+  return <dialog ref={ref}>{children}</dialog>;
+};
 
 function useLocalStorageState<T>(key: string, initial: object) {
   const [state, setState] = useState<T>(() => {
@@ -122,6 +178,12 @@ function useLocalStorageState<T>(key: string, initial: object) {
   return [state, setState] as const;
 }
 
+const limit = (x: number, min: number, max: number) => {
+  if (x < min) return min;
+  if (x > max) return max;
+  return x;
+};
+
 export type SamplesT = {
   [id: string]: SampleT;
 };
@@ -131,10 +193,4 @@ export type SampleT = {
   begin: number;
   active: boolean;
   bufferid: string;
-};
-
-const limit = (x: number, min: number, max: number) => {
-  if (x < min) return min;
-  if (x > max) return max;
-  return x;
 };
