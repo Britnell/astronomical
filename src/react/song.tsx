@@ -128,22 +128,39 @@ export default function Song({
             <div className=" flex gap-3" key={key}>
               <div
                 className={
-                  " w-[180px] h-36 p-3 flex flex-col gap-2 " +
-                  (editing ? " bg-blue-300" : " bg-[var(--b2)]")
+                  " w-[180px] p-3 flex flex-col gap-2  bg-[var(--b2)]"
+                  // + (editing ? " bg-blue-300" : " ")
                 }
               >
                 <div className=" flex items-end justify-between">
-                  <h2 className=" text-2xl">{key}</h2>
+                  <h2 className=" text-3xl">{key}</h2>
                   <p>{begin.toPrecision(4)}s</p>
                 </div>
                 <button
                   onClick={() => callback("editkey", key)}
-                  className=" grow  w-full bg-black bg-opacity-10 hover:bg-opacity-15 "
+                  className={
+                    " w-full py-1  " +
+                    (editing
+                      ? " bg-[#0ff] bg-opacity-50 "
+                      : " bg-black bg-opacity-10 hover:bg-opacity-15")
+                  }
                 >
                   {editing ? "done" : "edit"}
                 </button>
+                <button
+                  onClick={() => callback("copykey", key)}
+                  className=" w-full py-1 bg-black bg-opacity-10 hover:bg-opacity-15 "
+                >
+                  copy
+                </button>
+
                 <div className="x">
-                  <button onClick={() => callback("delete", key)}>x</button>
+                  <button
+                    onClick={() => callback("delete", key)}
+                    className=" px-2 py-1"
+                  >
+                    x
+                  </button>
                 </div>
               </div>
               <div className=" grow ">

@@ -75,9 +75,14 @@ export default function Player({
         // seek sample to pos
         break;
       case "delete":
-        //
         setModal({
           type: "deletekey",
+          val: arg,
+        });
+        break;
+      case "copykey":
+        setModal({
+          type: "copykey",
           val: arg,
         });
         break;
@@ -102,12 +107,27 @@ export default function Player({
     setSamples((s) => ({ ...s, [key]: { ...smpl, active: false } }));
   };
 
+  const duplicateKey = (from: string, to: string) => {
+    const smpl = samples[from];
+    setSamples((s) => ({ ...s, [to]: { ...smpl, key: to, active: true } }));
+  };
   const closeModal = () => setModal(null);
 
   return (
     <main>
-      <Modal isOpen={modal?.type === "deletekey"}>
-        {
+      {Object.entries(buffers).map(([name, buffer]) => (
+        <Song
+          key={name}
+          bufferId={name}
+          edit={edit}
+          buffer={buffer}
+          callback={callbacks}
+          samples={samples}
+          removeBuffer={removeSample}
+        />
+      ))}
+      <Modal isOpen={!!modal?.type} onClose={closeModal}>
+        {modal?.type === "deletekey" && (
           <div className="asd">
             <p>Remove sample key {modal?.val}</p>
             <div className="flex gap-2">
@@ -125,19 +145,28 @@ export default function Player({
               </button>
             </div>
           </div>
-        }
+        )}
+        {modal?.type === "copykey" && (
+          <div className="asd">
+            <p>Copy sample {`[${modal?.val}]`} to another key </p>
+            <div className="flex gap-2">
+              <input
+                name="copykey"
+                onChange={({ target }) => {
+                  if (!modal) return;
+                  duplicateKey(modal.val, target.value);
+                  target.value = "";
+                  closeModal();
+                }}
+              />
+
+              <button className=" bg-gray-300" onClick={closeModal}>
+                cancel
+              </button>
+            </div>
+          </div>
+        )}
       </Modal>
-      {Object.entries(buffers).map(([name, buffer]) => (
-        <Song
-          key={name}
-          bufferId={name}
-          edit={edit}
-          buffer={buffer}
-          callback={callbacks}
-          samples={samples}
-          removeBuffer={removeSample}
-        />
-      ))}
       {/* <button onClick={() => {}}>click</button> */}
     </main>
   );
@@ -146,9 +175,11 @@ export default function Player({
 const Modal = ({
   children,
   isOpen,
+  onClose,
 }: {
   children: ReactNode;
   isOpen: boolean;
+  onClose?: () => void;
 }) => {
   const ref = useRef<HTMLDialogElement>(null);
 
@@ -156,7 +187,14 @@ const Modal = ({
     if (!ref.current) return;
     if (isOpen) ref.current.showModal();
     else ref.current.close();
+
+    const callback = () => {
+      if (onClose) onClose();
+    };
+    ref.current.addEventListener("close", callback);
+    return () => ref.current?.removeEventListener("close", callback);
   }, [isOpen]);
+
   return <dialog ref={ref}>{children}</dialog>;
 };
 
