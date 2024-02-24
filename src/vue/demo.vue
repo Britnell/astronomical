@@ -1,4 +1,3 @@
-html
 <template>
   <div>{{ message }}</div>
   <p>

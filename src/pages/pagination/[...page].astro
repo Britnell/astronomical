@@ -17,8 +17,21 @@ export async function getStaticPaths({ paginate }: { paginate: any }) {
     { pageSize: 3 }
   );
 }
+
+type Props = {
+  page: {
+    total: number;
+    data: any[];
+    url: {
+      next: string;
+      prev: string;
+    };
+    currentPage: number;
+    lastPage: number;
+  };
+};
 // All paginated data is passed on the "page" prop
-const { page } = Astro.props;
+const { page }: Props = Astro.props;
 ---
 
 <div>

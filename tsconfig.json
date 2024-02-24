@@ -1,15 +1,17 @@
 {
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "jsxImportSource": "react",
-    "strict": true,
+    "strict": false,
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "types": ["vite/client"],
+    "types": [
+      "vite/client"
+    ],
     "noEmit": true,
     "isolatedModules": true
   }
