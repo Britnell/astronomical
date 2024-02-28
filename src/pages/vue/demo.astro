@@ -1,5 +1,6 @@
 ---
-
+// @ts-ignore
+import Demo from "../../vue/demo.vue";
 ---
 
 <!doctype html>
@@ -11,15 +12,6 @@
   </head>
   <body>
     <h1>Vue!</h1>
-    <nav>
-      <ul>
-        <li>
-          <a href="/vue/demo">demo</a>
-        </li>
-        <li>
-          <a href="/vue/pomodoro">pomodoro</a>
-        </li>
-      </ul>
-    </nav>
+    <Demo message="Hello world" client:load />
   </body>
 </html>

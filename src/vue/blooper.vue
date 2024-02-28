@@ -1,4 +1,3 @@
-html
 <template>
   <button class="px-1 bg-blue-200" @click="bleep">Bloop</button>
   <p class="subtitle">

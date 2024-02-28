@@ -1,56 +1,89 @@
+<style scoped>
+section {
+  padding: 0 2em;
+  margin: 2em 0;
+}
+</style>
 <template>
   <div>{{ message }}</div>
-  <p>
-    favourite foods :
-    <span v-for="item in food"> {{ item }}, </span>
-  </p>
-  <button class="px-2 bg-gray-200" @click="increment">
-    Count is: {{ count }} x 2 = {{ double }}
-  </button>
-  <p>An accordion</p>
-  <button
-    class="px-2 bg-blue-200"
-    role="button"
-    @click="openMenu(true)"
-    v-if="!isOpen"
-  >
-    Open Menu
-  </button>
-  <button role="button" @click="openMenu(false)" v-else>Close Menu</button>
-  <div v-if="isOpen">
-    <p>blablab menu content lorem ipsum</p>
-  </div>
 
-  <div>
-    <label
-      >Input value : "{{ ip }}"
-      <div>
-        <input :value="ip" @input="(event) => (ip = event.target?.value)" />
-      </div>
-    </label>
-  </div>
-  <div>
-    <label>
-      Password: {{ password }}
-      <div>
-        <input id="password" v-model="password" />
-      </div>
-    </label>
+  <section>
     <p>
-      encrypted :
-      {{
-        password
-          .split("")
-          .map((ch) => ch.charCodeAt(0))
-          .join("")
-      }}
-      <br />
+      favourite foods :
+      <ul>
+        <li v-for="(item, i) in food" :key="i" :class="{ bold: i % 2 === 0 }">
+          <span :class="['a',`b-${i}`,{odd: i%2===1}]">
+            {{ item }},
+          </span>
+        </li>
+      </ul>
     </p>
-  </div>
+  </section>
 
-  <div>
-    <p ref="pref">Refs</p>
-  </div>
+  <section>
+    <p>Count is: {{ count }} x 2 = {{ double }}</p>
+    <button  class="px-2 py-1 " :class="[' bg-gray-200', (count<3?' bg-red-300':''), {'bg-green-300':count%4===0} ]" @click="increment">+1</button>
+  </section>
+
+  <section>
+    <p>An accordion</p>
+    <button
+      class="px-2 bg-blue-200"
+      role="button"
+      @click="openMenu(true)"
+      v-if="!isOpen"
+    >
+      Open Menu
+    </button>
+    <button
+      class="px-2 bg-blue-200"
+      role="button"
+      @click="openMenu(false)"
+      v-else
+    >
+      Close Menu
+    </button>
+    <div v-if="isOpen">
+      <p>blablab menu content lorem ipsum</p>
+    </div>
+  </section>
+
+  <section>
+    <div :id="ip">
+      <label
+        >Input value : "{{ ip }}"
+        <div>
+          <input :value="ip" @input="(event) => (ip = event.target?.value)" />
+        </div>
+      </label>
+    </div>
+  </section>
+
+  <section>
+    <div>
+      <label>
+        Password: {{ password }}
+        <div>
+          <input id="password" v-model="password" />
+        </div>
+      </label>
+      <p>
+        encrypted :
+        {{
+          password
+            .split("")
+            .map((ch) => ch.charCodeAt(0))
+            .join("")
+        }}
+        <br />
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Refs :</h2>
+    <p ref="pref"></p>
+  </section>
 
   <div>
     <p>Events</p>
@@ -60,7 +93,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import Blooper from "./blooper.vue";
 
 defineProps({
@@ -78,19 +111,23 @@ const double = computed(() => count.value * 2);
 watch(count, (v) => {
   console.log(` Count is now ${v}`);
 });
+
 const isOpen = ref<boolean>(false);
 const openMenu = (action: boolean) => (isOpen.value = action);
 
 const ip = ref("hello");
 const password = ref("");
-
 const pref = ref<HTMLParagraphElement>();
 
+let intvl;
 onMounted(() => {
-  setInterval(() => {
+  intvl = setInterval(() => {
     if (pref.value)
-      pref.value.textContent = `ref : ${Math.floor(Date.now() / 1000)}`;
-  }, 1000);
+      pref.value.textContent = `ref : ${Math.floor(Date.now() / 500)}`;
+  }, 500);
+});
+onUnmounted(() => {
+  intvl && clearInterval(intvl);
 });
 
 const lastBloop = ref(0);
@@ -99,4 +136,3 @@ const onBloop = (val: number) => {
   lastBloop.value = val;
 };
 </script>
-<style scoped></style>
