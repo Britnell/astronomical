@@ -155,7 +155,7 @@ export default function Grids({ data }: { data: Movies[] }) {
               <>
                 <MovieImg
                   path={mov.poster_path}
-                  class={
+                  className={
                     " w-full aspect-[3] object-cover " +
                     (m === 0 ? " breakout" : " ")
                   }
@@ -176,11 +176,11 @@ export default function Grids({ data }: { data: Movies[] }) {
   );
 }
 
-const MovieImg = (props: { path: string; class?: string }) => (
+const MovieImg = (props: { path: string; className?: string }) => (
   <img
     src={`https://image.tmdb.org/t/p/w300/${props.path}`}
     alt="movie post"
-    className={props.class}
+    className={props.className}
   />
 );
 
