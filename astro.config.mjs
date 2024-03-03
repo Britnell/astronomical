@@ -2,7 +2,8 @@ import { defineConfig } from "astro/config";
 import qwikdev from "@qwikdev/astro";
 import react from "@astrojs/react";
 import tailwind from "@astrojs/tailwind";
-import node from "@astrojs/node";
+
+import vercel from "@astrojs/vercel/serverless";
 
 // https://astro.build/config
 export default defineConfig({
@@ -16,7 +17,5 @@ export default defineConfig({
     tailwind(),
   ],
   output: "hybrid",
-  adapter: node({
-    mode: "standalone",
-  }),
+  adapter: vercel(),
 });
