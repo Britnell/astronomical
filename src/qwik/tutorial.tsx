@@ -28,7 +28,7 @@ const Sync = component$(() => (
     </a>
     <form
       preventdefault:submit
-      onSubmit$={(ev, el) => {
+      onSubmit$={(_, el) => {
         console.log(" submitting form ", el);
       }}
     >

@@ -89,7 +89,7 @@ export const Todo = component$(({ data }: { data: string[] }) => {
     // const loc = window.localStorage.getItem(loc_id);
   });
 
-  const update = $((ev: Event, el: HTMLInputElement, i: number) => {
+  const update = $((_: Event, el: HTMLInputElement, i: number) => {
     console.log(" typed in el # ", i);
     store.todos[i].name = el.value;
     // update local storage
@@ -212,7 +212,7 @@ export const Tabs = component$(() => {
     </>
   );
 });
-export const TabsFirst = component$(({ tabs }: { tabs: string[] }) => {
+export const TabsFirst = component$(({}: { tabs: string[] }) => {
   const activeTab = useSignal(0);
 
   return (

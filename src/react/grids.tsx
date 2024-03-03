@@ -127,7 +127,7 @@ export default function Grids({ data }: { data: Movies[] }) {
         </p>
         <div className="grid-kevin-simple   ">
           <>
-            {data.slice(0, 2).map((mov, m) => (
+            {data.slice(0, 2).map((mov) => (
               <>
                 <MovieImg
                   path={mov.poster_path}
@@ -186,7 +186,7 @@ const MovieImg = (props: { path: string; className?: string }) => (
 
 const MovieCards = ({ data, n = 20 }: { data: Movies[]; n?: number }) => (
   <>
-    {data.slice(0, n).map((mov, m) => (
+    {data.slice(0, n).map((mov) => (
       <div className=" bg-gray-200 ">
         <MovieImg
           path={mov.poster_path}
@@ -203,7 +203,7 @@ const Squares = ({ n = 8 }: { n: number }) => (
   <>
     {Array(n)
       .fill(0)
-      .map((_, i) => (
+      .map((_) => (
         <div className=" bg-blue-200 aspect-square"></div>
       ))}
   </>
