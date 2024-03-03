@@ -80,7 +80,7 @@ export const Todo = component$(({ data }: { data: string[] }) => {
     const loc = window.localStorage.getItem("qwik-todos");
     console.log({ loc });
     try {
-      const json = JSON.parse(loc);
+      const json = JSON.parse(loc ?? "");
       store.todos = json;
     } catch (e) {
       console.log(" bad data in loco");
