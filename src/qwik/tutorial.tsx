@@ -2,7 +2,7 @@
 
 import { $, component$, sync$ } from "@builder.io/qwik";
 
-export default component$(() => {
+export const Tutorial = component$(() => {
   return (
     <>
       <h1>Tutorial</h1>
