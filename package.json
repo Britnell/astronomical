@@ -14,7 +14,6 @@
     "@astrojs/node": "^8.2.0",
     "@astrojs/react": "^3.0.9",
     "@astrojs/tailwind": "^5.1.0",
-    "@astrojs/vue": "^4.0.8",
     "@builder.io/qwik": "^1.4.5",
     "@qwikdev/astro": "^0.5.7",
     "@types/react": "^18.2.46",
@@ -23,12 +22,10 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwindcss": "^3.4.0",
-    "typescript": "^5.3.3",
-    "vue": "^3.4.19"
+    "typescript": "^5.3.3"
   },
   "devDependencies": {
     "@types/node": "^20.11.20",
-    "sass": "^1.69.6",
-    "vue-tsc": "^1.8.27"
+    "sass": "^1.69.6"
   }
 }
