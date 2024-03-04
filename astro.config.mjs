@@ -9,10 +9,10 @@ import vercel from "@astrojs/vercel/serverless";
 export default defineConfig({
   integrations: [
     qwikdev({
-      include: ["src/qwik/*"],
+      include: ["**/qwik/*"],
     }),
     react({
-      include: ["src/react/*"],
+      include: ["**/react/*"],
     }),
     tailwind(),
   ],
