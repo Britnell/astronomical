@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <style>
+      body {
+        padding: 0 24px;
+        font-family: Seravek, "Gill Sans Nova", Ubuntu, Calibri, "DejaVu Sans",
+          source-sans-pro, system-ui, sans-serif;
+        font-weight: normal;
+      }
+      h1 {
+        font-size: 4rem;
+        font-weight: 600;
+      }
+      h2 {
+        font-size: 2rem;
+        font-weight: 600;
+      }
+      h3 {
+        font-size: 1.4rem;
+        font-weight: 600;
+      }
+      input,
+      button {
+        border: 2px solid #ddd;
+        border-radius: 4px;
+        padding: 1px 2px;
+      }
+
+      body > div {
+        margin: 2rem 0;
+      }
+    </style>
+    <div>
+      <h1>HTML Tags</h1>
+      <p>Popping tags</p>
+    </div>
+
+    <div class="color">
+      <h2>Color picker</h2>
+      <label>
+        favourite color:
+        <input type="color" name="favourite" value="#000" />
+      </label>
+    </div>
+
+    <div>
+      <h2>Date picker</h2>
+      <label
+        >When's your birthday?
+        <input
+          type="date"
+          value="1991-08-10"
+          min="1980-01-01"
+          max="2010-12-31"
+        />
+      </label>
+    </div>
+
+    <div>
+      <h2>Datalist</h2>
+      <label>Favourite browser :</label>
+      <input list="browsers" name="browser" id="browser" />
+      <datalist id="browsers">
+        <option value="Edge"></option>
+        <option value="Firefox"></option>
+        <option value="Chrome"></option>
+        <option value="Opera"></option>
+        <option value="Safari"></option>
+        <option value="Innovation"></option>
+        <option value="Panels"></option>
+        <option value="Tabs"></option>
+      </datalist>
+    </div>
+
+    <style>
+      #carousel {
+        display: flex;
+        flex-flow: wrap;
+        gap: 1rem;
+        padding: 0 1rem;
+      }
+      .tmp .card {
+        background: #eee;
+        padding: 0.5rem;
+      }
+    </style>
+    <div class="tmp">
+      <h2>Template</h2>
+
+      <div id="carousel"></div>
+      <template>
+        <div class="card">
+          <h3>Heading</h3>
+          <p>Text</p>
+          <div class="content"></div>
+        </div>
+      </template>
+      <script>
+        const tmp = document.getElementsByTagName("template")[0];
+        const carousel = document.getElementById("carousel");
+        for (let x = 0; x < 5; x++) {
+          const copy = tmp.content.cloneNode(true);
+          copy.querySelector("h3").textContent = `Heading ${x}`;
+          copy.querySelector("p").textContent = Array(x + 1)
+            .fill("lorem ipsum")
+            .join(" ");
+          carousel.append(copy);
+        }
+      </script>
+    </div>
+
+    <div>
+      <h2>Progress</h2>
+      <label>
+        Loading ...
+        <progress aria-label="loading content.."></progress>
+      </label>
+      <div>
+        <label>
+          Progress
+          <progress id="bar" value="10" max="100">10%</progress>
+        </label>
+      </div>
+      <script>
+        const bar = document.getElementById("bar");
+        let x = 10;
+        const progress = () => {
+          x += 1;
+          bar.value = x;
+          if (x < 100) setTimeout(progress, 80);
+        };
+        setTimeout(progress, 80);
+      </script>
+    </div>
+
+    <div>
+      <h2>Sub / Sup!</h2>
+      <h3>
+        H<sub>2</sub>O + CO<sub>2</sub>
+      </h3>
+      <h3>
+        E = m x c<sup>2</sup>
+      </h3>
+    </div>
+
+    <div>
+      <h2>System Fonts!</h2>
+      <p>
+        I remember starting web dev and wandering, where is the list of system
+        fonts i can use without loading?...
+        <br />
+         well there's an answer. Ready to use font-stacks that work on every
+        platform. (shout out to CSS-Kevin for this)
+      </p>
+      <a
+        href="https://modernfontstacks.com/"
+        target="_blank"
+        style="font-size:2rem; color:blue; text-decoration:underline;"
+        rel="noreferrer noopener">modernfontstacks.com</a
+      >
+      <h3>Here's a handwritten system-font</h3>
+      <p
+        style=" max-width: 400px; font-family: 'Segoe Print', 'Bradley Hand', Chilanka, TSCu_Comic, casual, cursive;"
+      >
+        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dignissimos
+        maiores accusamus exercitationem repellendus veniam! Sequi autem quo
+        aliquam obcaecati veniam, animi provident qui quae fugit a illo,
+        accusamus officiis optio.
+      </p>
+      <p
+        style="font-size:3em; font-weight:700; font-family: ui-rounded, 'Hiragino Maru Gothic ProN', Quicksand, Comfortaa, Manjari, 'Arial Rounded MT', 'Arial Rounded MT Bold', Calibri, source-sans-pro, sans-serif;"
+      >
+        COOL
+      </p>
+    </div>
+
+    <div class="popover">
+      <h2>Popover</h2>
+      <p>Popover works as plain html - no js!</p>
+      <div style="position:relative;">
+        <button popovertarget="my-popover"> Open Popover</button>
+        <div id="my-popover" popover>
+          <p>I am a popover with more information.</p>
+        </div>
+      </div>
+      <style>
+        #my-popover {
+          position: fixed;
+          background: white;
+          padding: 16px;
+          box-shadow: 2px 2px 8px 2px rgba(0, 0, 0, 0.2);
+          border-radius: 4px;
+        }
+        #my-popover::backdrop {
+          background: #000;
+          opacity: 0.1;
+        }
+      </style>
+    </div>
+
+    <style>
+      .morefonts h3 {
+        background: #eee;
+      }
+    </style>
+    <div class="morefonts">
+      <h2>More Fonts...</h2>
+
+      <div
+        style="font-family:font-family: Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', source-sans-pro, sans-serif; font-size:1.6rem; margin: 3rem 0;"
+      >
+        <h3>Humanist:</h3>
+        <h1>The Title-Sphere</h1>
+        <p style="font-weight: 200;">
+          200 - The Quick Brown Fox Jumps Over the Lazy Dog
+        </p>
+        <p style="font-weight: 300;">
+          300 - The Quick Brown Fox Jumps Over the Lazy Dog
+        </p>
+        <p style="font-weight: 400;">
+          400 - The Quick Brown Fox Jumps Over the Lazy Dog
+        </p>
+        <p style="font-weight: 500;">
+          500 - The Quick Brown Fox Jumps Over the Lazy Dog
+        </p>
+        <p style="font-weight: 700;">
+          700 - The Quick Brown Fox Jumps Over the Lazy Dog
+        </p>
+      </div>
+
+      <div
+        style="font-family: Avenir, Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif; font-size:1.6rem; margin: 3rem 0;"
+      >
+        <h3>Geometric Humanist:</h3>
+        <h1>The Title-Sphere</h1>
+        <p style="font-weight: 500;">
+          500 - The Quick Brown Fox Jumps Over the Lazy Dog
+        </p>
+        <p style="font-weight: 700;">
+          700 - The Quick Brown Fox Jumps Over the Lazy Dog
+        </p>
+        <p style="font-weight: 900;">
+          900 - The Quick Brown Fox Jumps Over the Lazy Dog
+        </p>
+      </div>
+
+      <div
+        style="font-family: Bahnschrift, 'DIN Alternate', 'Franklin Gothic Medium', 'Nimbus Sans Narrow', sans-serif-condensed, sans-serif; font-size:1.6rem; margin: 3rem 0;"
+      >
+        <h3>Industrial:</h3>
+        <h1>The Title-Sphere</h1>
+        <p style="font-weight: 500;">
+          500 - The Quick Brown Fox Jumps Over the Lazy Dog
+        </p>
+        <p style="font-weight: 700;">
+          700 - The Quick Brown Fox Jumps Over the Lazy Dog
+        </p>
+      </div>
+    </div>
+
+    <div>...</div>
+  </body>
+</html>
