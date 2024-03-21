@@ -157,7 +157,7 @@ export default component$(({ data }: { data: Movies[] }) => {
               <>
                 <MovieImg
                   path={mov.poster_path}
-                  className={
+                  class={
                     " w-full aspect-[3] object-cover " +
                     (m === 0 ? " breakout" : " ")
                   }

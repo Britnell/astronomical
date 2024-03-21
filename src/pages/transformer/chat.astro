@@ -1,0 +1,139 @@
+---
+
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.js"
+    ></script>
+  </head>
+  <body>
+    <style>
+      body {
+        font-family: Inter, Roboto, "Helvetica Neue", "Arial Nova",
+          "Nimbus Sans", Arial, sans-serif;
+        background: black;
+        color: white;
+      }
+    </style>
+    <div>
+      <script type="module">
+        import { pipeline } from "https://cdn.jsdelivr.net/npm/@xenova/transformers";
+        /*  models :
+        
+        */
+
+        window.generator = await pipeline(
+          "text-generation",
+          //   "Xenova/llama2.c-stories15M"
+          "Xenova/llama2.c-stories42M"
+        );
+
+        const options = {
+          max_new_tokens: 40,
+          num_beams: 1,
+          temperature: 1,
+          top_k: 50,
+          top_p: 0.95,
+          no_repeat_ngram_size: 1,
+          do_sample: true,
+          early_stopping: true,
+        };
+        window.generate = (text) =>
+          window
+            .generator(text, options)
+            .then((resp) => resp?.[0]?.generated_text);
+      </script>
+      <script is:inline>
+        const waitForPipeline = () => {
+          return new Promise((res, rej) => {
+            const check = async () => {
+              // wait to load
+              if (!window.generator) return;
+              clearInterval(intvl);
+              // run once
+              await window.generator("Hello", { max_new_tokens: 5 });
+              res();
+            };
+            const intvl = setInterval(check, 20);
+          }, 20);
+        };
+
+        const testPipeline = async () => {};
+        document.addEventListener("alpine:init", () => {
+          Alpine.data("chatbot", () => ({
+            loading: true,
+            generating: false,
+            question: "",
+            chat: `You are a friendly chatbot, that answers questions. 
+        You answer questions about Tommy, in the voice of Tommy.
+
+        Here is some information about Tommy :
+        ~~~
+        I'm Tommy, i am 33 years old, a web developer for frontend and fullstack web sites and apps. my favourite colour is red.
+        ~~~
+`,
+            conversation: [],
+            loadPipe() {
+              waitForPipeline().then(() => {
+                this.loading = false;
+              });
+            },
+            ask(q) {
+              this.generating = true;
+              const prompt = `
+          question:${q}
+          tommy:`;
+              this.question = "";
+              //   this.chat += prompt;
+
+              setTimeout(async () => {
+                console.log("PRMP: \n", this.chat + prompt);
+                const text = await window.generate(this.chat + prompt);
+                this.generating = false;
+                this.chat = text;
+              }, 1);
+            },
+          }));
+        });
+      </script>
+      <h1>Live Chat</h1>
+      <div x-data="chatbot" x-init="loadPipe">
+        <p x-text="loading ? 'loading...' : ''"></p>
+        <p x-text="generating ? 'generating...' : ''"></p>
+        <p x-text="chat" class="font-mono"></p>
+
+        <div>
+          <template x-for="(convo,i) in conversation" :key="i">
+            <div class="x">
+              <p x-text="convo.question"></p>
+              <p x-text="convo.answer"></p>
+            </div>
+          </template>
+        </div>
+        <div>
+          <!-- <p x-text="question"></p> -->
+          <form @submit.prevent="ask(question)">
+            <label for="question"> question</label>
+
+            <div class="flex gap-3">
+              <input
+                type="text"
+                name="question"
+                id="question"
+                value=""
+                x-model="question"
+                class="grow bg-black px-4 py-2 border border-white"
+              />
+              <button class="px-4" :disabled="generating">Go</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
