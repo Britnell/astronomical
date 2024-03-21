@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Three.js</h1>
+    <ul class="flex gap-10 list-disc ml-6">
+      {
+        "wave".split(",").map((sec) => (
+          <li>
+            <a class=" px-4 bg-blue-500" href={`/three/${sec}`}>
+              {sec}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </body>
+</html>
