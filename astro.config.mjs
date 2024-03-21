@@ -9,13 +9,13 @@ import node from "@astrojs/node";
 export default defineConfig({
   integrations: [
     qwikdev({
-      include: ["src/qwik/*"],
+      include: ["**/qwik/*.tsx"],
     }),
     vue({
-      include: ["src/vue/*"],
+      include: ["**/vue/*.vue"],
     }),
     react({
-      include: ["src/react/*"],
+      include: ["**/react/*.tsx"],
     }),
     tailwind(),
   ],

@@ -5,7 +5,7 @@
   </p>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const emit = defineEmits(["bloop"]);
 
 const bleep = () => {

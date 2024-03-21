@@ -1,18 +1,7 @@
 {
-  "extends": "astro/tsconfigs/strict",
+  "extends": ["astro/tsconfigs/strict", "@vue/tsconfig/tsconfig.json"],
   "compilerOptions": {
     "jsx": "preserve",
-    "jsxImportSource": "react",
-    "strict": false,
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "types": [
-      "vite/client"
-    ],
-    "noEmit": true,
-    "isolatedModules": true
+    "jsxImportSource": "react"
   }
 }

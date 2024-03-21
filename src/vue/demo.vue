@@ -1,28 +1,72 @@
+<script setup lang="ts">
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
+import Blooper from "./blooper.vue";
+
+defineProps({
+  message: {
+    type: String,
+    required: true,
+  },
+});
+const food = ["Pizza", "French fries", "Spaghetti"];
+
+const count = ref(0);
+const increment = () => (count.value += 1);
+const double = computed(() => count.value * 2);
+
+watch(count, (v) => {
+  console.log(` Count is now ${v}`);
+});
+
+const isOpen = ref<boolean>(false);
+const openMenu = (action: boolean) => (isOpen.value = action);
+
+const ip = ref("hello");
+const password = ref("");
+const pref = ref<HTMLParagraphElement>();
+
+let intvl: any;
+
+onMounted(() => {
+  intvl = setInterval(() => {
+    if (pref.value)
+      pref.value.textContent = `ref : ${Math.floor(Date.now() / 500)}`;
+  }, 500);
+});
+onUnmounted(() => {
+  intvl && clearInterval(intvl);
+});
+
+const lastBloop = ref(0);
+const onBloop = (val: number) => {
+  console.log(`Oh bloop! @${val}`);
+  lastBloop.value = val;
+};
+</script>
+
 <style scoped>
 section {
   padding: 0 2em;
   margin: 2em 0;
 }
 </style>
+
 <template>
   <div>{{ message }}</div>
 
   <section>
-    <p>
-      favourite foods :
-      <ul>
-        <li v-for="(item, i) in food" :key="i" :class="{ bold: i % 2 === 0 }">
-          <span :class="['a',`b-${i}`,{odd: i%2===1}]">
-            {{ item }},
-          </span>
-        </li>
-      </ul>
-    </p>
-  </section>
-
-  <section>
     <p>Count is: {{ count }} x 2 = {{ double }}</p>
-    <button  class="px-2 py-1 " :class="[' bg-gray-200', (count<3?' bg-red-300':''), {'bg-green-300':count%4===0} ]" @click="increment">+1</button>
+    <button
+      class="px-2 py-1"
+      :class="[
+        ' bg-gray-200',
+        count < 3 ? ' bg-red-300' : '',
+        { 'bg-green-300': count % 4 === 0 },
+      ]"
+      @click="increment"
+    >
+      +1
+    </button>
   </section>
 
   <section>
@@ -46,6 +90,19 @@ section {
     <div v-if="isOpen">
       <p>blablab menu content lorem ipsum</p>
     </div>
+  </section>
+
+  <section>
+    <p>favourite food</p>
+    <ul>
+      <li
+        v-for="(item, i) in food"
+        :key="i"
+        :class="{ even: i % 2 === 0, odd: i % 2 === 1 }"
+      >
+        <span :class="['a', `b-${i}`, { third: i === 3 }]"> {{ item }}, </span>
+      </li>
+    </ul>
   </section>
 
   <section>
@@ -91,48 +148,3 @@ section {
     <Blooper @bloop="onBloop">lorem ipsum</Blooper>
   </div>
 </template>
-
-<script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from "vue";
-import Blooper from "./blooper.vue";
-
-defineProps({
-  message: {
-    type: String,
-    required: true,
-  },
-});
-const food = ["Pizza", "French fries", "Spaghetti"];
-
-const count = ref(0);
-const increment = () => (count.value += 1);
-const double = computed(() => count.value * 2);
-
-watch(count, (v) => {
-  console.log(` Count is now ${v}`);
-});
-
-const isOpen = ref<boolean>(false);
-const openMenu = (action: boolean) => (isOpen.value = action);
-
-const ip = ref("hello");
-const password = ref("");
-const pref = ref<HTMLParagraphElement>();
-
-let intvl;
-onMounted(() => {
-  intvl = setInterval(() => {
-    if (pref.value)
-      pref.value.textContent = `ref : ${Math.floor(Date.now() / 500)}`;
-  }, 500);
-});
-onUnmounted(() => {
-  intvl && clearInterval(intvl);
-});
-
-const lastBloop = ref(0);
-const onBloop = (val: number) => {
-  console.log(`Oh bloop! @${val}`);
-  lastBloop.value = val;
-};
-</script>

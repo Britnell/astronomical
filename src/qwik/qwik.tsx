@@ -80,6 +80,7 @@ export const Todo = component$(({ data }: { data: string[] }) => {
     const loc = window.localStorage.getItem("qwik-todos");
     console.log({ loc });
     try {
+      if (!loc) return;
       const json = JSON.parse(loc);
       store.todos = json;
     } catch (e) {
