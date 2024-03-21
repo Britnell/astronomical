@@ -1,0 +1,24 @@
+---
+import ThreeC from "../react/three";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style is:global>
+    body {
+      --b2: #282dbd;
+      --bg: #090a19;
+      background: var(--bg);
+      color: white;
+      font-family: "Nimbus Mono PS", "Courier New", monospace;
+    }
+  </style>
+  <body>
+    <ThreeC client:only="react" />
+  </body>
+</html>
