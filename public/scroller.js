@@ -1,12 +1,10 @@
 class MyComponent extends HTMLElement {
-  name = "name";
   unwatch = false;
   lastScroll = null;
   raf = null;
 
   onObserver = (entry) => {
     this.unwatch = !entry.isIntersecting;
-    console.log(this.name, entry.isIntersecting);
     if (entry.isIntersecting) this.raf = requestAnimationFrame(this.scrollLoop);
   };
   constructor() {
@@ -16,7 +14,6 @@ class MyComponent extends HTMLElement {
     wrapper.innerHTML = `<slot></slot>`;
 
     this.unwatch = false;
-    this.name = this.getAttribute("name") ?? "name";
     this.raf = null;
 
     this.observer = new IntersectionObserver(
@@ -33,12 +30,14 @@ class MyComponent extends HTMLElement {
     shadow.appendChild(wrapper);
   }
 
-  digits = (x) => {
+  relDigits = (x) => {
+    // x [0,1] > [0,100]
     if (x < 0) return 0;
-    if (x > 1) return 1 * 100;
-    const f = 1000;
-    return (100 * Math.floor(x * f)) / f;
+    if (x > 1) return 100;
+    return this.round(100 * x, 1000);
   };
+
+  round = (x, digits = 100) => Math.floor(x * digits) / digits;
 
   scrollLoop = () => {
     const y = Math.floor(window.scrollY);
@@ -53,15 +52,18 @@ class MyComponent extends HTMLElement {
 
   scrollPos = (el) => {
     const rect = el.getBoundingClientRect();
-    const h = window.innerHeight;
-    const scrollMax = h + rect.height;
-    const top = (h - rect.top) / h;
-    const bottom = (h - rect.top - rect.height) / h;
-    const view = (h - rect.top) / scrollMax;
+    const height = window.innerHeight;
+    const fullView = height + rect.height;
+    const bottom = height - rect.top - rect.height;
 
-    this.style.setProperty("--view", this.digits(view));
-    this.style.setProperty("--top", this.digits(top));
-    this.style.setProperty("--bottom", this.digits(bottom));
+    const scroll = height - rect.top;
+    const center = fullView / 2 - scroll;
+
+    this.style.setProperty("--scroll", `${scroll}px`);
+    this.style.setProperty("--center", `${center}px`);
+    this.style.setProperty("--view", `${fullView}px`);
+    this.style.setProperty("--top", `${rect.top}px`);
+    this.style.setProperty("--bottom", `${bottom}px`);
   };
 
   connectedCallback() {
