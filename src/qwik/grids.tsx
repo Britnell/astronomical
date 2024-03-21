@@ -129,7 +129,7 @@ export default component$(({ data }: { data: Movies[] }) => {
         </p>
         <div class="grid-kevin-simple   ">
           <>
-            {data.slice(0, 2).map((mov, m) => (
+            {data.slice(0, 2).map((mov) => (
               <>
                 <MovieImg
                   path={mov.poster_path}
@@ -157,7 +157,7 @@ export default component$(({ data }: { data: Movies[] }) => {
               <>
                 <MovieImg
                   path={mov.poster_path}
-                  class={
+                  className={
                     " w-full aspect-[3] object-cover " +
                     (m === 0 ? " breakout" : " ")
                   }
@@ -188,7 +188,7 @@ const MovieImg = (props: { path: string; class?: string }) => (
 
 const MovieCards = ({ data, n = 20 }: { data: Movies[]; n?: number }) => (
   <>
-    {data.slice(0, n).map((mov, m) => (
+    {data.slice(0, n).map((mov) => (
       <div class=" bg-gray-200 ">
         <MovieImg
           path={mov.poster_path}
@@ -205,7 +205,7 @@ const Squares = ({ n = 8 }: { n: number }) => (
   <>
     {Array(n)
       .fill(0)
-      .map((_, i) => (
+      .map(() => (
         <div class=" bg-blue-200 aspect-square"></div>
       ))}
   </>

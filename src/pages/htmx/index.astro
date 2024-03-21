@@ -1,13 +1,12 @@
 ---
-import fs from "node:fs";
-
-try {
-  fs.accessSync("/tmp/count.txt");
-} catch {
-  fs.writeFileSync("/tmp/count.txt", "0");
-}
-
-const counter = fs.readFileSync("/tmp/count.txt", "utf-8");
+// import fs from "node:fs";
+// try {
+//   fs.accessSync("/tmp/count.txt");
+// } catch {
+//   fs.writeFileSync("/tmp/count.txt", "0");
+// }
+// const counter = fs.readFileSync("/tmp/count.txt", "utf-8");
+const counter = 0;
 const count = 0;
 ---
 

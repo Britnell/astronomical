@@ -2,7 +2,7 @@
 
 import { $, component$, sync$ } from "@builder.io/qwik";
 
-export default component$(() => {
+export const Tutorial = component$(() => {
   return (
     <>
       <h1>Tutorial</h1>
@@ -28,7 +28,7 @@ const Sync = component$(() => (
     </a>
     <form
       preventdefault:submit
-      onSubmit$={(ev, el) => {
+      onSubmit$={(_, el) => {
         console.log(" submitting form ", el);
       }}
     >

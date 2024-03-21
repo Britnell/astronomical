@@ -1,9 +1,15 @@
 ---
-import fs from "node:fs";
 export const partial = true;
 
-const count = +fs.readFileSync("/tmp/count.txt", "utf-8").trim() + 1;
-fs.writeFileSync("/tmp/count.txt", count.toString());
+// import fs from "node:fs";
+// try {
+//   fs.accessSync("/tmp/count.txt");
+// } catch {
+//   fs.writeFileSync("/tmp/count.txt", "0");
+// }
+// const count = +fs.readFileSync("/tmp/count.txt", "utf-8").trim() + 1;
+// fs.writeFileSync("/tmp/count.txt", count.toString());
+const count = 1;
 ---
 
 <!-- {count} -->
