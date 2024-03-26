@@ -1,47 +1,26 @@
+---
+import Box from "../../style/box.astro";
+---
+
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
   </head>
-  <style>
-    :root {
-      --persp: 400px;
-    }
-    .threed {
-      perspective-origin: -100% -100%;
-      transform-style: preserve-3d;
-      transform-origin: left center;
-    }
-    .perspective {
-      transform: perspective(var(--persp)) translate3d(0px, 0px, 0px)
-        rotateY(6deg);
-    }
 
-    body {
-      font-size: 1.5rem;
-    }
-  </style>
   <body>
     <div class="threed perspective max-w-[1100px] mx-auto my-20">
       <header class="flex justify-between border-b border-black">
-        <span>Title</span>
-        <button>xxx</button>
+        <span>A 3D box w CSS 3D</span>
       </header>
       <main>
-        <div class="x">
-          <p>asdasdasd</p>
-          <button class="bg-black text-white hover:[transform:translateZ(30px)]"
-            >wow</button
-          >
-        </div>
-        <p class="my-6">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequuntur
-          rem iusto exercitationem perspiciatis asperiores, eos eveniet minima
-          quibusdam iste quaerat facere sit atque reiciendis blanditiis qui ad
-          aliquid? Soluta, libero.
-        </p>
+        <Box />
       </main>
     </div>
   </body>

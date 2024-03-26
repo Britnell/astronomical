@@ -1,0 +1,121 @@
+<style>
+  :root {
+    --persp: 400px;
+  }
+  .threed {
+    perspective-origin: -100% -100%;
+    transform-style: preserve-3d;
+    transform-origin: left center;
+  }
+
+  body {
+    font-size: 1.5rem;
+  }
+</style>
+
+<section>
+  <style>
+    .box {
+      position: relative;
+      transform-style: preserve-3d;
+
+      --width: var(--set-width, 200px);
+      --height: var(--set-height, 160px);
+      --depth: var(--set-depth, 120px);
+
+      width: var(--width);
+      height: var(--height);
+
+      transform: rotateY(calc(var(--x) * 1deg)) rotateX(calc(var(--y) * -1deg));
+
+      /* perspective: 800px; */
+      /* perspective-origin: -100% -100%; */
+
+      display: grid;
+      place-items: center;
+    }
+
+    .face {
+      grid-column: 1/2;
+      grid-row: 1/2;
+      /* position: absolute; */
+      opacity: 0.3;
+      perspective-origin: -100% -100%;
+      transform-origin: 50% 50%;
+
+      color: white;
+      font-weight: bold;
+      font-size: 2rem;
+    }
+
+    .front,
+    .back {
+      width: var(--width);
+      height: var(--height);
+      background-color: red;
+    }
+    .front {
+      transform: rotateY(0deg) translateZ(calc(var(--depth) / 2));
+    }
+    .back {
+      transform: rotateY(180deg) translateZ(calc(var(--depth) / 2));
+    }
+
+    .top,
+    .bottom {
+      width: var(--width);
+      height: var(--depth);
+      background-color: orange;
+    }
+    .top {
+      transform: rotateX(90deg) translateZ(calc(0px + (var(--height) / 2)));
+    }
+    .bottom {
+      transform: rotateX(-90deg) translateZ(calc(0px + (var(--height) / 2)));
+    }
+
+    .left,
+    .right {
+      height: var(--height);
+      width: var(--depth);
+      background: blue;
+    }
+
+    .left {
+      transform: rotateY(90deg) translateZ(calc(0px + (var(--width) / 2)));
+    }
+
+    .right {
+      transform: rotateY(-90deg) translateZ(calc(0px + (var(--width) / 2)));
+    }
+  </style>
+  <script is:inline>
+    document.addEventListener("alpine:init", () => {
+      Alpine.data("drag", () => ({
+        x: 15,
+        y: 15,
+        handleMove(e) {
+          if (e.buttons !== 1) return;
+          this.x += e.movementX;
+          this.y += e.movementY;
+        },
+      }));
+    });
+  </script>
+  <h1>A box</h1>
+  <p>Drag with mouse to rotate</p>
+  <div
+    x-data="drag"
+    class="p-20 inline-block border border-black"
+    @mousemove="handleMove($event)"
+  >
+    <div class="box" :style="`--x: ${x}; --y: ${y}`">
+      <div class="face front">front</div>
+      <div class="face back">back</div>
+      <div class="face top">top</div>
+      <div class="face bottom">bottom</div>
+      <div class="face left">left</div>
+      <div class="face right">right</div>
+    </div>
+  </div>
+</section>
