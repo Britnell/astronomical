@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+      defer></script>
+  </head>
+  <body>
+    <h2>asdasd</h2>
+    <p>asdasd</p>
+
+    <style>
+      /* @keyframe unblur {
+            from
+        } */
+      .unblur {
+        /* filter: blur(10px); */
+      }
+    </style>
+    <p class="text-center">uncover me</p>
+    <div
+      class="unblur relative w-[50vw] h-[50vw] mx-auto blur-md hover:blur-0 transition-all duration-700"
+    >
+      <img
+        src="https://a.storyblok.com/f/267935/1920x478/0b5fe4f9e2/homepage-banner-1920x610px-3.jpg"
+        alt="bird"
+        class="w-full h-full object-cover"
+      />
+    </div>
+
+    <p class="text-center">slow reveal</p>
+    <script is:inline>
+      document.addEventListener("alpine:init", () => {
+        Alpine.data("unblur", () => ({
+          dist: 100,
+          move(e) {
+            if (e.buttons !== 1) return;
+            this.x += e.movementX;
+            this.y += e.movementY;
+          },
+        }));
+      });
+    </script>
+    <div
+      x-data="unblur"
+      class="unblur relative w-[50vw] h-[50vw] mx-auto"
+      @mousemove="move"
+      :style="`--dist:${dist}`"
+    >
+      <img
+        src="https://a.storyblok.com/f/267935/1920x478/0b5fe4f9e2/homepage-banner-1920x610px-3.jpg"
+        alt="bird"
+        class="w-full h-full object-cover"
+      />
+    </div>
+  </body>
+</html>

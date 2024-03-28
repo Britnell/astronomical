@@ -10,7 +10,7 @@
 
     <ul class="list-disc pl-6">
       {
-        ["box", "perspective"].map((page) => (
+        "perspective,blurs".split(",").map((page) => (
           <li class=" underline">
             <a href={`/style/${page}`}>{page}</a>
           </li>
