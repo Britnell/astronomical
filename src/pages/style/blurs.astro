@@ -7,6 +7,7 @@
     <script
       src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
       defer></script>
+    <script src="/scroller.js" type="module"></script>
   </head>
   <body>
     <h2>asdasd</h2>
@@ -81,7 +82,6 @@
           <div
             class="p-10 bg-white"
             :style="`clip-path: circle(100px at ${x}px ${y}px)`"
-            xstyle="`clip-path:polygon(${x-99}px ${y-99}px,${x+99}px ${y-99}px,${x+99}px ${y+99}px,${x-99}px ${y+99}px);`"
           >
             <img
               src="https://a.storyblok.com/f/267935/1920x478/0b5fe4f9e2/homepage-banner-1920x610px-3.jpg"
@@ -91,11 +91,33 @@
           </div>
         </div>
       </div>
-      <!-- <div
-        :style="`left:${x}px; top:${y}px`"
-        class="w-20 h-20 fixed -translate-x-1/2 -translate-y-1/2 rounded-full blur-md bg-red-500 bg-opacity-50"
-      >
-      </div> -->
+    </section>
+
+    <section>
+      <div class="max-w-[500px] mx-auto">
+        <p>On scroll blur?</p>
+
+        <p class="text-3xl">
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aliquid
+          praesentium quae ex optio beatae voluptate tempore animi sunt, veniam
+          ullam sapiente minus! Labore dolore mollitia facilis voluptate.
+          Veritatis, ea nulla!
+        </p>
+        <on-scroller>
+          <img
+            src="https://a.storyblok.com/f/267935/1920x478/0b5fe4f9e2/homepage-banner-1920x610px-3.jpg"
+            alt="bird"
+            class="w-[min(50vw,500px)] h-[min(50vw,500px)] mx-auto object-cover"
+            style="filter: blur( max(var(--center)*0.1, 0px) )"
+          />
+        </on-scroller>
+        <p class="text-3xl">
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aliquid
+          praesentium quae ex optio beatae voluptate tempore animi sunt, veniam
+          ullam sapiente minus! Labore dolore mollitia facilis voluptate.
+          Veritatis, ea nulla!
+        </p>
+      </div>
     </section>
   </body>
 </html>
