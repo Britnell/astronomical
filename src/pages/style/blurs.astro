@@ -13,48 +13,89 @@
     <p>asdasd</p>
 
     <style>
-      /* @keyframe unblur {
-            from
-        } */
-      .unblur {
-        /* filter: blur(10px); */
+      section {
+        margin: 6rem 0;
       }
     </style>
-    <p class="text-center">uncover me</p>
-    <div
-      class="unblur relative w-[50vw] h-[50vw] mx-auto blur-md hover:blur-0 transition-all duration-700"
-    >
-      <img
-        src="https://a.storyblok.com/f/267935/1920x478/0b5fe4f9e2/homepage-banner-1920x610px-3.jpg"
-        alt="bird"
-        class="w-full h-full object-cover"
-      />
-    </div>
+    <section>
+      <p class="text-center">uncover me</p>
+      <div
+        class="relative w-[min(50vw,500px)] h-[min(50vw,500px)] mx-auto blur-md hover:blur-0 transition-all duration-700"
+      >
+        <img
+          src="https://a.storyblok.com/f/267935/1920x478/0b5fe4f9e2/homepage-banner-1920x610px-3.jpg"
+          alt="bird"
+          class="w-full h-full object-cover"
+        />
+      </div>
+    </section>
 
-    <p class="text-center">slow reveal</p>
-    <script is:inline>
-      document.addEventListener("alpine:init", () => {
-        Alpine.data("unblur", () => ({
-          dist: 100,
-          move(e) {
-            if (e.buttons !== 1) return;
-            this.x += e.movementX;
-            this.y += e.movementY;
-          },
-        }));
-      });
-    </script>
-    <div
-      x-data="unblur"
-      class="unblur relative w-[50vw] h-[50vw] mx-auto"
-      @mousemove="move"
-      :style="`--dist:${dist}`"
-    >
-      <img
-        src="https://a.storyblok.com/f/267935/1920x478/0b5fe4f9e2/homepage-banner-1920x610px-3.jpg"
-        alt="bird"
-        class="w-full h-full object-cover"
-      />
-    </div>
+    <section>
+      <p class="text-center">distance reveal</p>
+      <script is:inline>
+        document.addEventListener("alpine:init", () => {
+          Alpine.data("unblur", () => ({
+            dist: 100,
+            move(e) {
+              const rect = e.currentTarget.getBoundingClientRect();
+              this.dist =
+                Math.abs(rect.width / 2 - e.layerX) +
+                Math.abs(rect.height / 2 - e.layerY);
+              // console.log(e.layerX / rect.width, e.layerY / rect.height);
+            },
+          }));
+        });
+      </script>
+      <div
+        x-data="unblur"
+        class="relative"
+        @mousemove="move"
+        :style="`--dist:${Math.floor(dist)}px; filter:blur(calc(var(--dist)/80))`"
+        :class="[]"
+      >
+        <img
+          src="https://a.storyblok.com/f/267935/1920x478/0b5fe4f9e2/homepage-banner-1920x610px-3.jpg"
+          alt="bird"
+          class="w-[min(50vw,500px)] h-[min(50vw,500px)] mx-auto object-cover"
+        />
+      </div>
+    </section>
+
+    <section x-data="{x:0,y:0}" class="relative">
+      <p class="text-center">
+        moving blur <br />
+         tricky... we can only blur the content INSIDE the blurred element. so
+        we need to double everything. show an unblurred image, and then only
+        show a portion of the blurred image
+      </p>
+
+      <div class="relative">
+        <div class="p-10 absolute inset-0">
+          <img
+            src="https://a.storyblok.com/f/267935/1920x478/0b5fe4f9e2/homepage-banner-1920x610px-3.jpg"
+            alt="bird"
+            class="w-[min(50vw,500px)] h-[min(50vw,500px)] mx-auto object-cover"
+          />
+        </div>
+        <div @mousemove="x=$event.layerX;y=$event.layerY;" class="blur-lg">
+          <div
+            class="p-10 bg-white"
+            :style="`clip-path: circle(100px at ${x}px ${y}px)`"
+            xstyle="`clip-path:polygon(${x-99}px ${y-99}px,${x+99}px ${y-99}px,${x+99}px ${y+99}px,${x-99}px ${y+99}px);`"
+          >
+            <img
+              src="https://a.storyblok.com/f/267935/1920x478/0b5fe4f9e2/homepage-banner-1920x610px-3.jpg"
+              alt="bird"
+              class="w-[min(50vw,500px)] h-[min(50vw,500px)] mx-auto object-cover"
+            />
+          </div>
+        </div>
+      </div>
+      <!-- <div
+        :style="`left:${x}px; top:${y}px`"
+        class="w-20 h-20 fixed -translate-x-1/2 -translate-y-1/2 rounded-full blur-md bg-red-500 bg-opacity-50"
+      >
+      </div> -->
+    </section>
   </body>
 </html>
