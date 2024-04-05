@@ -42,7 +42,6 @@
               this.dist =
                 Math.abs(rect.width / 2 - e.layerX) +
                 Math.abs(rect.height / 2 - e.layerY);
-              // console.log(e.layerX / rect.width, e.layerY / rect.height);
             },
           }));
         });
@@ -51,7 +50,7 @@
         x-data="unblur"
         class="relative"
         @mousemove="move"
-        :style="`--dist:${Math.floor(dist)}px; filter:blur(calc(var(--dist)/80))`"
+        :style="`--dist:${Math.floor(dist)}px; filter:blur(calc(var(--dist)/50))`"
         :class="[]"
       >
         <img
@@ -63,11 +62,13 @@
     </section>
 
     <section x-data="{x:0,y:0}" class="relative">
-      <p class="text-center">
-        moving blur <br />
+      <p class="text-center max-w-[70ch] mx-auto">
+        cursor blur <br />
          tricky... we can only blur the content INSIDE the blurred element. so
         we need to double everything. show an unblurred image, and then only
-        show a portion of the blurred image
+        show a portion of the blurred image. <br />
+         note - also added a white background, else the blur is partly
+        transparent at the edges.
       </p>
 
       <div class="relative">
