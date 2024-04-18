@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+      defer></script>
+    <script src="/scroller.js" type="module"></script>
+  </head>
+  <body>
+    <section>
+      <p>
+        <a href="/style">Back</a>
+      </p>
+      <h2>I saw this cool button animation somewhere, but forgot where</h2>
+      <p>the classic text 'curso' render animation, but applied to a button</p>
+      <p>
+        For the animation to work we use the `steps()` timing function, which
+        unfortunately needs the number of steps. so we can generalise the css
+        for it, but need to specify the text char length with a css variable.
+        Interestingly I needed 'no of steps' = '1 + the number of letters' , in
+        order to align the steps with the char widths. <br />
+         I'm also using a monospace font for that, although since the animation
+        is so quick it would probably look fine without the mono.
+      </p>
+    </section>
+
+    <section>
+      <p>Hover hover me ( or keyboard focus)</p>
+      <button class="first">
+        <span>save my changes</span>
+      </button>
+    </section>
+    <style lang="scss">
+      body {
+        padding: 2rem;
+      }
+      p {
+        margin: 1em 0;
+      }
+      button {
+        border: 1px solid black;
+        border-radius: 2rem;
+        padding: 0.2em 0.8em;
+
+        font-size: 1.2rem;
+        font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo,
+          Consolas, "DejaVu Sans Mono", monospace;
+      }
+
+      section {
+        margin: 4rem 0;
+      }
+      button.first {
+        display: flex;
+        align-items: center;
+        --letters: 16;
+
+        & span {
+          width: 0%;
+          overflow: hidden;
+          white-space: nowrap;
+          transition: all calc(var(--letters) * 0.03s)
+            steps(calc(var(--letters) + 1), end);
+        }
+        &:hover span,
+        &:focus-visible span {
+          width: 100%;
+        }
+        &::after {
+          content: ">";
+          display: block;
+          margin-left: 0.6rem;
+          font-size: 1.2em;
+        }
+      }
+    </style>
+
+    <section>
+      <p>
+        this is cool, but the button looks a bit empty, and only works for
+        situations where the button function is clear before hover reveals the
+        text. Could be cool for a button that is enabled / disabled when a form
+        is ready to submit or so.
+      </p>
+      <p>
+        it might be cool if there is one text, that is then overwritten by the
+        animation on hover.
+      </p>
+      <style lang="scss">
+        button.second {
+          display: flex;
+          align-items: center;
+          --letters: 16;
+
+          & .reveal {
+            position: relative;
+            background: white;
+            width: 0%;
+            overflow: hidden;
+            white-space: nowrap;
+            transition: all calc(var(--letters) * 0.03s)
+              steps(calc(var(--letters) + 1), end);
+          }
+          &.linear .reveal {
+            transition: all calc(var(--letters) * 0.03s) ease-in-out;
+          }
+          &:hover .reveal,
+          &:focus-visible .reveal {
+            width: 100%;
+          }
+          &::after {
+            content: ">";
+            display: block;
+            font-size: 1.2em;
+            padding-left: 0.6rem;
+            position: relative;
+            background: white;
+          }
+
+          & .pre {
+            padding-left: 2rem;
+            position: absolute;
+          }
+        }
+
+        button.nomono {
+          font-family: system-ui, sans-serif;
+        }
+      </style>
+      <button class="second">
+        <span class="pre">Submit</span>
+        <span class="reveal">save my changes</span>
+      </button>
+      <p>
+        that's cool, and much clearer. now we can have a normal 'submit' button
+        with a fun extra message that appears.
+      </p>
+    </section>
+
+    <section>
+      <p>
+        Here's how it looks with a non mono-font. at this speed we dont notice
+        too much the steps dont align perfectly. we then probably also dont need
+        to be as precise with out number of steps.
+      </p>
+      <button class="second nomono">
+        <span class="pre">ready?</span>
+        <span class="reveal">save my changes</span>
+      </button>
+      <p>and here's how it looks with just a linear animation</p>
+      <button class="second nomono linear">
+        <span class="pre">ready?</span>
+        <span class="reveal">save my changes</span>
+      </button>
+      <p>this also totatlly works for a different style button.</p>
+    </section>
+
+    <p>I like it!</p>
+  </body>
+</html>

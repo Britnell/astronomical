@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+      defer></script>
+    <script src="/scroller.js" type="module"></script>
+  </head>
+  <body>
+    <h2>asdasd</h2>
+    <p>asdasd</p>
+
+    <style>
+      @property --zoom {
+        syntax: "<length>";
+        inherits: false;
+        initial-value: 800px;
+      }
+      section {
+        width: 800px;
+        height: 800px;
+        margin: 0 auto;
+        background: center repeat
+          url("https://a.storyblok.com/f/267935/1080x1080/0f78e75459/event-logo.jpg");
+        background-size: var(--zoom) var(--zoom);
+      }
+    </style>
+    <section
+      class="hover:[--zoom:260px] transition-all duration-500 ease-in-out"
+    >
+      <p class="text-center">Beep</p>
+    </section>
+  </body>
+</html>

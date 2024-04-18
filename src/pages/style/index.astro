@@ -10,11 +10,13 @@
 
     <ul class="list-disc pl-6">
       {
-        "grid,scroller,perspective,blurs".split(",").map((page) => (
-          <li class=" underline">
-            <a href={`/style/${page}`}>{page}</a>
-          </li>
-        ))
+        "buttonanim,blurs,grid,scroller,repeat,perspective"
+          .split(",")
+          .map((page) => (
+            <li class=" underline">
+              <a href={`/style/${page}`}>{page}</a>
+            </li>
+          ))
       }
     </ul>
   </body>

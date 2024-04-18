@@ -30,15 +30,6 @@ class MyComponent extends HTMLElement {
     shadow.appendChild(wrapper);
   }
 
-  relDigits = (x) => {
-    // x [0,1] > [0,100]
-    if (x < 0) return 0;
-    if (x > 1) return 100;
-    return this.round(100 * x, 1000);
-  };
-
-  round = (x, digits = 100) => Math.floor(x * digits) / digits;
-
   scrollLoop = () => {
     const y = Math.floor(window.scrollY);
 
@@ -73,10 +64,6 @@ class MyComponent extends HTMLElement {
   disconnectedCallback() {
     this.observer.unobserve(this);
     this.raf && cancelAnimationFrame(this.raf);
-  }
-
-  callback(ev) {
-    console.log(ev);
   }
 }
 
