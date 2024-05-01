@@ -10,8 +10,14 @@
     <script src="/scroller.js" type="module"></script>
   </head>
   <body>
-    <h2>asdasd</h2>
-    <p>asdasd</p>
+    <div class="text-center">
+      <h2>Let's play with blur!</h2>
+      <p>
+        i've realised this is such a powerful visual effect we can apply in
+        different ways. <br />
+        And importantly we can animate it!
+      </p>
+    </div>
 
     <style>
       section {
@@ -19,7 +25,7 @@
       }
     </style>
     <section>
-      <p class="text-center">uncover me</p>
+      <p class="text-center">discover blur - hover to reveal</p>
       <div
         class="relative w-[min(50vw,500px)] h-[min(50vw,500px)] mx-auto blur-md hover:blur-0 transition-all duration-700"
       >
@@ -39,9 +45,8 @@
             dist: 100,
             move(e) {
               const rect = e.currentTarget.getBoundingClientRect();
-              this.dist =
-                Math.abs(rect.width / 2 - e.layerX) +
-                Math.abs(rect.height / 2 - e.layerY);
+              this.dist = Math.abs(rect.width / 2 - e.layerX);
+              // Math.abs(rect.height / 2 - e.layerY);
             },
           }));
         });
@@ -50,12 +55,12 @@
         x-data="unblur"
         class="relative"
         @mousemove="move"
-        :style="`--dist:${Math.floor(dist)}px; filter:blur(calc(var(--dist)/50))`"
+        :style="`--dist: ${Math.floor(dist)}px; filter: blur(calc(var(--dist)/30))`"
       >
         <img
           src="https://a.storyblok.com/f/267935/1920x478/0b5fe4f9e2/homepage-banner-1920x610px-3.jpg"
-          alt="bird"
           class="w-[min(50vw,500px)] h-[min(50vw,500px)] mx-auto object-cover"
+          alt="bird"
         />
       </div>
     </section>
@@ -136,8 +141,8 @@
       <p class="max-w-[70ch] mx-auto">
         but then we think - there must be a better way! and i came across
         blur-gradient. Holy mackerel. so this works completely opposite, instead
-        of blurring content, we can use backdrop-filter to blur content behind
-        and element!
+        of blurring dom CONTENT, we can use backdrop-filter to blur anything
+        BEHIND and element!
       </p>
 
       <div class="h-[var(--h)]">
