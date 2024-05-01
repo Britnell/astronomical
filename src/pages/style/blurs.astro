@@ -51,7 +51,6 @@
         class="relative"
         @mousemove="move"
         :style="`--dist:${Math.floor(dist)}px; filter:blur(calc(var(--dist)/50))`"
-        :class="[]"
       >
         <img
           src="https://a.storyblok.com/f/267935/1920x478/0b5fe4f9e2/homepage-banner-1920x610px-3.jpg"
@@ -61,14 +60,43 @@
       </div>
     </section>
 
+    <section>
+      <div class="max-w-[500px] mx-auto">
+        <p class="my-10">
+          On scroll blur? <br /> i like how high blur almost desintegrates / hides
+          the image, and it unblurs into existence
+        </p>
+        <p class="text-3xl opacity-50">
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aliquid
+          praesentium quae ex optio beatae voluptate tempore animi sunt, veniam
+          ullam sapiente minus! Labore dolore mollitia facilis voluptate.
+          Veritatis, ea nulla!
+        </p>
+        <on-scroller>
+          <img
+            src="https://a.storyblok.com/f/267935/1920x478/0b5fe4f9e2/homepage-banner-1920x610px-3.jpg"
+            alt="bird"
+            class="w-[min(50vw,500px)] h-[min(50vw,500px)] mx-auto object-cover"
+            style="filter: blur( max(var(--center)*0.1, 0px) )"
+          />
+        </on-scroller>
+        <p class="text-3xl opacity-50">
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aliquid
+          praesentium quae ex optio beatae voluptate tempore animi sunt, veniam
+          ullam sapiente minus! Labore dolore mollitia facilis voluptate.
+          Veritatis, ea nulla!
+        </p>
+      </div>
+    </section>
+
     <section x-data="{x:0,y:0}" class="relative">
-      <p class="text-center max-w-[70ch] mx-auto">
+      <p class="max-w-[70ch] mx-auto">
         cursor blur <br />
-         tricky... we can only blur the content INSIDE the blurred element. so
-        we need to double everything. show an unblurred image, and then only
-        show a portion of the blurred image. <br />
-         note - also added a white background, else the blur is partly
-        transparent at the edges.
+        tricky... we can only blur the content INSIDE the blurred element. so we
+        need to double everything. show an unblurred image, and then only show a
+        portion of the blurred image. <br />
+        note - also added a white background, else the blur is partly transparent
+        at the edges.
       </p>
 
       <div class="relative">
@@ -94,38 +122,49 @@
       </div>
     </section>
 
-    <section>
-      <div class="max-w-[500px] mx-auto">
-        <p class="my-10">
-          On scroll blur? <br /> i like how high blur almost desintegrates /
-          hides the image, and it unblurs into existence
-        </p>
-        <p class="text-3xl opacity-50">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aliquid
-          praesentium quae ex optio beatae voluptate tempore animi sunt, veniam
-          ullam sapiente minus! Labore dolore mollitia facilis voluptate.
-          Veritatis, ea nulla!
-        </p>
-        <on-scroller>
-          <img
-            src="https://a.storyblok.com/f/267935/1920x478/0b5fe4f9e2/homepage-banner-1920x610px-3.jpg"
-            alt="bird"
-            class="w-[min(50vw,500px)] h-[min(50vw,500px)] mx-auto object-cover"
-            style="filter: blur( max(var(--center)*0.1, 0px) )"
-          />
-        </on-scroller>
-        <p class="text-3xl opacity-50">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aliquid
-          praesentium quae ex optio beatae voluptate tempore animi sunt, veniam
-          ullam sapiente minus! Labore dolore mollitia facilis voluptate.
-          Veritatis, ea nulla!
-        </p>
-        <p class="text-3xl opacity-50">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aliquid
-          praesentium quae ex optio beatae voluptate tempore animi sunt, veniam
-          ullam sapiente minus! Labore dolore mollitia facilis voluptate.
-          Veritatis, ea nulla!
-        </p>
+    <style>
+      .container {
+        background-image: url("https://a.storyblok.com/f/267935/1920x478/0b5fe4f9e2/homepage-banner-1920x610px-3.jpg");
+        background-position: center;
+      }
+      .blurout {
+        backdrop-filter: blur(10px);
+        mask-image: linear-gradient(to right, transparent 20%, white 80%);
+      }
+    </style>
+    <section x-data="{x:0,y:0}" class="relative">
+      <p class="max-w-[70ch] mx-auto">
+        but then we think - there must be a better way! and i came across
+        blur-gradient. Holy mackerel. so this works completely opposite, instead
+        of blurring content, we can use backdrop-filter to blur content behind
+        and element!
+      </p>
+
+      <div class="h-[var(--h)]">
+        <div @mousemove="x=$event.offsetX; y=$event.offsetY;" class="">
+          <div class="relative container w-[800px] h-[500px] mx-auto">
+            <div class="blurout w-full h-full"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section x-data="{x:0,y:0}" class="relative">
+      <p class="max-w-[70ch] mx-auto">
+        so can we also do a hover blur but with a radial gradient?
+      </p>
+      <div class="relative w-[min(50vw,500px)] mx-auto">
+        <div
+          @mousemove="x=$event.offsetX; y=$event.offsetY;"
+          :style="`--x: ${x}px; --y: ${y}px; `"
+          class="absolute w-full h-full [backdrop-filter:blur(10px)] [mask-image:radial-gradient(circle_at_var(--x)_var(--y),transparent_60px,white_260px)]"
+        >
+        </div>
+        <img
+          src="https://a.storyblok.com/f/267935/1920x478/0b5fe4f9e2/homepage-banner-1920x610px-3.jpg"
+          alt="bird"
+          class="h-[min(50vw,500px)] object-cover"
+        />
       </div>
     </section>
   </body>
