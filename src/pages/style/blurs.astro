@@ -23,6 +23,10 @@
       section {
         margin: 6rem 0;
       }
+      img {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+      }
     </style>
     <section>
       <p class="text-center">discover blur - hover to reveal</p>
@@ -101,7 +105,8 @@
         need to double everything. show an unblurred image, and then only show a
         portion of the blurred image. <br />
         note - also added a white background, else the blur is partly transparent
-        at the edges.
+        at the edges. <br />
+        but then we think - there must be a better way!
       </p>
 
       <div class="relative">
@@ -139,10 +144,11 @@
     </style>
     <section x-data="{x:0,y:0}" class="relative">
       <p class="max-w-[70ch] mx-auto">
-        but then we think - there must be a better way! and i came across
-        blur-gradient. Holy mackerel. so this works completely opposite, instead
-        of blurring dom CONTENT, we can use backdrop-filter to blur anything
-        BEHIND and element!
+        so i came across blur-gradient. Holy mackerel. so this works completely
+        opposite, instead of blurring dom CONTENT, we can use backdrop-filter to
+        blur anything BEHIND and element! and it can also be combined with
+        mask-image, to only blur parts, or fade the blur in and out. <br />
+        here is a blur-gradient from left to right.
       </p>
 
       <div class="h-[var(--h)]">
@@ -156,7 +162,7 @@
 
     <section x-data="{x:0,y:0}" class="relative">
       <p class="max-w-[70ch] mx-auto">
-        so can we also do a hover blur but with a radial gradient?
+        so can we also do a focus blur by using a radial gradient!
       </p>
       <div class="relative w-[min(50vw,500px)] mx-auto">
         <div
@@ -170,6 +176,31 @@
           alt="bird"
           class="h-[min(50vw,500px)] object-cover"
         />
+      </div>
+    </section>
+
+    <section x-data="{x:0,y:0}" class="relative">
+      <div
+        @mousemove="x=$event.offsetX; y=$event.offsetY;"
+        :style="`--x: ${x}px; --y: ${y}px; `"
+        class="absolute w-full h-full [backdrop-filter:blur(8px)] [mask-image:radial-gradient(circle_at_var(--x)_var(--y),white_35px,transparent_90px)]"
+      >
+      </div>
+      <div class="py-[100px]">
+        <h2 class="text-center">BLUR EVERYTHING</h2>
+        <p class="max-w-[70ch] mx-auto">
+          so this is what i was hoping for, easily blur anything you want,
+          dynamically. and we can smooth the edges by creating the right
+          mask-image with gradients.
+        </p>
+        <div class="w-[min(50vw,500px)] mx-auto">
+          <div></div>
+          <img
+            src="https://a.storyblok.com/f/267935/1920x478/0b5fe4f9e2/homepage-banner-1920x610px-3.jpg"
+            alt="bird"
+            class="h-[min(50vw,500px)] object-cover"
+          />
+        </div>
       </div>
     </section>
   </body>
