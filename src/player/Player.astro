@@ -10,7 +10,7 @@ const list = "abcdefghijklmnopqrstuvwxyz".split("");
       <a href="/transitions">
         <h1 class="font-black text-xl py-4 px-4">Transitions header</h1>
       </a>
-      <a href="/">back</a>
+      <a href="/">Exit</a>
     </div>
   </header>
   <main>
@@ -24,7 +24,7 @@ const list = "abcdefghijklmnopqrstuvwxyz".split("");
           {
             list.map((li) => (
               <a
-                href={`/transitions/${li}`}
+                href={`/astro/transitions/${li}`}
                 class={
                   " py-1 px-3" +
                   (li === name ? " bg-blue-400" : " hover:bg-blue-300")

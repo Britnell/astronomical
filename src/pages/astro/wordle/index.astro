@@ -2,7 +2,7 @@
 export const prerender = false;
 
 import { ViewTransitions } from "astro:transitions";
-import { newGame, parseGame, type Game } from "../../wordle";
+import { newGame, parseGame, type Game } from "../../../wordle";
 
 const gameCookie = Astro.cookies.get("game")?.value;
 const game: Game = parseGame(gameCookie) ?? newGame();
@@ -10,6 +10,8 @@ Astro.cookies.set("game", game);
 
 const params = new URLSearchParams(Astro.url.search);
 const badGuess = !!params.get("guess");
+
+
 ---
 
 <!doctype html>
@@ -54,7 +56,7 @@ const badGuess = !!params.get("guess");
           ))
         }
       </ul>
-      <form method="POST" action="/wordle/form" transition:persist>
+      <form method="POST" action="/astro/wordle/form" transition:persist>
         <input autofocus class="border" type="text" name="guess" />
         <button>go</button>
       </form>
@@ -67,7 +69,7 @@ const badGuess = !!params.get("guess");
       const button = document.getElementById("restart");
       if (button)
         button.onclick = () => {
-          document.cookie = `game=; Path=/; Max-Age=1`;
+          document.cookie = `game=; Path=/astro/wordle; Max-Age=1`;
           window.location.reload();
         };
 

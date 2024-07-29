@@ -1,7 +1,7 @@
 ---
-import Letter from "../../player/Letter.astro";
-import Layout from "../../player/Layout.astro";
-import Player from "../../player/Player.astro";
+import Letter from "../../../player/Letter.astro";
+import Layout from "../../../player/Layout.astro";
+import Player from "../../../player/Player.astro";
 
 export function getStaticPaths() {
   const list = "abcdefghijklmnopqrstuvwxyz".split("");
@@ -14,7 +14,7 @@ const { name } = Astro.params;
 <Layout title="view transitions - Letter">
   <Player name={name}>
     <div>
-      <a href="/transitions">Back</a>
+      <a href="/astro/transitions">Back</a>
     </div>
     <div class="flex gap-8 bg-blue-300" transition:name={`box ${name}`}>
       <Letter name={name} />
