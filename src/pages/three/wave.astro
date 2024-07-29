@@ -10,12 +10,14 @@ import ThreeC from "../../react/three";
     <title>Document</title>
   </head>
   <style>
-    body {
+    .dark {
       background: black;
       color: white;
     }
   </style>
   <body>
-    <ThreeC client:only="react" />
+    <div class="dark">
+      <ThreeC client:only="react" />
+    </div>
   </body>
 </html>
