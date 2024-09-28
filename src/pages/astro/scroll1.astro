@@ -1,0 +1,182 @@
+---
+
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body {
+        height: 300vh;
+    }
+    .video-container {
+        z-index: -1;
+        position: absolute;
+        height: 100vh;
+        width: 100vw;;
+    }
+    #video-anim, .cover { 
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    #video-anim {
+        filter: blur(1px);
+    }
+    .overlay {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.3);
+        filter: blur(1px);
+    }
+</style>
+<body>
+    <section>
+        <div class="video-container">
+            <img src="/sheet.jpg" class="cover" />
+            <video id="video-anim" src="/sheet.webm"  muted preload="auto"></video>
+            <div class="overlay"></div>
+        </div>
+    </section>
+    <script >
+        const videoEl = window['video-anim']
+
+        let seeking = false;
+        let updateAfter = false
+        let targetTime = 0;
+        
+
+        videoEl.addEventListener('seeked', () => {
+            seeking = false
+            if(updateAfter){
+                updateAfter = false
+                seeking = true;
+                videoEl.currentTime = targetTime
+            }
+        });
+
+        window.addEventListener('load',(ev)=>{
+            const scrollPos = getScrollProgress();
+            controlVideo(scrollPos);
+        })
+
+        window.addEventListener('scroll', () => {
+            const scrollPos = getScrollProgress();
+            controlVideo(scrollPos);
+        });
+
+        function getScrollProgress() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            return scrollTop / scrollHeight;
+        }
+
+        function controlVideo(pos){
+            targetTime = pos * videoEl.duration;
+            if(!seeking){
+                seeking = true;
+                videoEl.currentTime = targetTime
+            }
+            else {
+                updateAfter = true;
+            }
+        }
+
+        // window.addEventListener('mousemove',(ev)=>controlVideo(ev.clientX / window.innerWidth))
+
+
+
+</script>
+<style>
+    main {
+        max-width: 600px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 4rem;
+    }
+    h1,h2 {
+        font-size: 3rem;
+    }
+    h1 {
+        text-align: center;
+    }
+</style>
+<main>
+    <header>
+        <h1>Video on scroll</h1>
+        <a href="/">{'<--'} back</a>
+    </header>
+    <h2>
+        Lorem, ipsum 
+    </h2>
+    <p>
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aperiam, molestiae qui nobis obcaecati consectetur maiores fugiat sed non soluta est, ducimus natus dolorem. Illo maiores enim voluptatem culpa iusto! Veritatis.
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aperiam, molestiae qui nobis obcaecati consectetur maiores fugiat sed non soluta est, ducimus natus dolorem. Illo maiores enim voluptatem culpa iusto! Veritatis.
+    </p>
+    <h2>
+         dolor sit amet
+    </h2>
+    <p>
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aperiam, molestiae qui nobis obcaecati consectetur maiores fugiat sed non soluta est, ducimus natus dolorem. Illo maiores enim voluptatem culpa iusto! Veritatis.
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aperiam, molestiae qui nobis obcaecati consectetur maiores fugiat sed non soluta est, ducimus natus dolorem. Illo maiores enim voluptatem culpa iusto! Veritatis.
+    </p>
+    <h2>
+         consectetur adipisicing elit. 
+   </h2>
+   <p>
+       Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aperiam, molestiae qui nobis obcaecati consectetur maiores fugiat sed non soluta est, ducimus natus dolorem. Illo maiores enim voluptatem culpa iusto! Veritatis.
+       Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aperiam, molestiae qui nobis obcaecati consectetur maiores fugiat sed non soluta est, ducimus natus dolorem. Illo maiores enim voluptatem culpa iusto! Veritatis.
+   </p>
+
+   <h2>
+    Aperiam, molestiae qui 
+</h2>
+<p>
+  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aperiam, molestiae qui nobis obcaecati consectetur maiores fugiat sed non soluta est, ducimus natus dolorem. Illo maiores enim voluptatem culpa iusto! Veritatis.
+  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aperiam, molestiae qui nobis obcaecati consectetur maiores fugiat sed non soluta est, ducimus natus dolorem. Illo maiores enim voluptatem culpa iusto! Veritatis.
+</p>
+<h2>
+    nobis obcaecati consectetur
+</h2>
+<p>
+  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aperiam, molestiae qui nobis obcaecati consectetur maiores fugiat sed non soluta est, ducimus natus dolorem. Illo maiores enim voluptatem culpa iusto! Veritatis.
+  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aperiam, molestiae qui nobis obcaecati consectetur maiores fugiat sed non soluta est, ducimus natus dolorem. Illo maiores enim voluptatem culpa iusto! Veritatis.
+</p>
+<h2>
+    maiores fugiat sed non soluta est
+</h2>
+<p>
+  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aperiam, molestiae qui nobis obcaecati consectetur maiores fugiat sed non soluta est, ducimus natus dolorem. Illo maiores enim voluptatem culpa iusto! Veritatis.
+  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aperiam, molestiae qui nobis obcaecati consectetur maiores fugiat sed non soluta est, ducimus natus dolorem. Illo maiores enim voluptatem culpa iusto! Veritatis.
+</p>
+
+<h2>
+    ducimus natus dolorem.
+</h2>
+<p>
+  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aperiam, molestiae qui nobis obcaecati consectetur maiores fugiat sed non soluta est, ducimus natus dolorem. Illo maiores enim voluptatem culpa iusto! Veritatis.
+  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aperiam, molestiae qui nobis obcaecati consectetur maiores fugiat sed non soluta est, ducimus natus dolorem. Illo maiores enim voluptatem culpa iusto! Veritatis.
+</p>
+<h2>
+    Illo maiores enim voluptatem
+</h2>
+<p>
+  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aperiam, molestiae qui nobis obcaecati consectetur maiores fugiat sed non soluta est, ducimus natus dolorem. Illo maiores enim voluptatem culpa iusto! Veritatis.
+  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aperiam, molestiae qui nobis obcaecati consectetur maiores fugiat sed non soluta est, ducimus natus dolorem. Illo maiores enim voluptatem culpa iusto! Veritatis.
+</p>
+<h2>
+    culpa iusto! Veritatis
+</h2>
+<p>
+  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aperiam, molestiae qui nobis obcaecati consectetur maiores fugiat sed non soluta est, ducimus natus dolorem. Illo maiores enim voluptatem culpa iusto! Veritatis.
+  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aperiam, molestiae qui nobis obcaecati consectetur maiores fugiat sed non soluta est, ducimus natus dolorem. Illo maiores enim voluptatem culpa iusto! Veritatis.
+</p>
+</main>
+</body>
+</html>
