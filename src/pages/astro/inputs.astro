@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+  </head>
+  <style>
+    input,
+    textarea {
+      border-radius: 4px;
+      padding: 2px 4px;
+      border: 2px solid #333;
+    }
+    label > span {
+      display: block;
+    }
+    main,
+    header {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    section {
+      margin: 2rem 0;
+    }
+    p {
+      margin: 1rem 0;
+    }
+
+    input:read-only {
+      background: rgba(0, 0, 0, 0.1);
+    }
+    a {
+      color: blue;
+    }
+  </style>
+  <body>
+    <header>
+      <h1>what can forms do for you?</h1>
+    </header>
+    <main>
+      <section>
+        <style>
+          input.empty {
+            background: rgba(180, 0, 0, 0.2);
+          }
+          input.empty:not(:placeholder-shown) {
+            background: none;
+          }
+        </style>
+        <div>
+          <p>style empty input</p>
+          <label>
+            <span> Name: </span>
+            <input placeholder="Your name..." class="empty" />
+          </label>
+        </div>
+
+        <p>readonly</p>
+        <label>
+          <span> Your employee id no : </span>
+          <input value="1234466" readonly />
+        </label>
+      </section>
+
+      <section>
+        <style>
+          .validate input:user-valid {
+            border: 2px solid green;
+          }
+          .validate input:user-invalid {
+            border: 2px solid red;
+          }
+        </style>
+        <form class="validate">
+          <p>show valid after visiting:</p>
+          <label>
+            <span> Name: </span>
+            <input type="text" placeholder="Your name..." class="" />
+          </label>
+          <label>
+            <span> Address: </span>
+            <input
+              type="text"
+              placeholder="Your name..."
+              class=""
+              minlength="6"
+            />
+          </label>
+          <p>eval pw</p>
+          <style>
+            .error {
+              display: none;
+              color: red;
+            }
+            input.pw:user-invalid ~ .error {
+              display: block;
+            }
+          </style>
+          <label>
+            <span> password </span>
+            <input
+              type="password"
+              class="pw"
+              required
+              pattern="[0-9A-Za-z]{8,}"
+            />
+            <!-- <input type="password" class="pw" required minlength="4" maxlength="20" /> -->
+            <p class="error">
+              Please only use upper + lowercase letters + a number
+            </p>
+          </label>
+
+          <p>without :user-valid pseudo class, for higher browser support,</p>
+          <label>
+            <style>
+              input.cssvalid {
+                border: 2px solid #000;
+              }
+              input.cssvalid:focus {
+                border: 2px solid #f00;
+              }
+              input.cssvalid:not(:placeholder-shown):not(:focus):valid {
+                border: 2px solid green;
+              }
+              input.cssvalid:not(:placeholder-shown):not(:focus):invalid {
+                border: 2px solid red;
+              }
+              .err {
+                display: none;
+              }
+              input.cssvalid:not(:placeholder-shown):not(:focus):invalid
+                ~ .err {
+                display: block;
+                color: red;
+              }
+            </style>
+            <span> Phone (min legth 4)</span>
+            <input
+              type="tel"
+              class="cssvalid"
+              required
+              minlength="4"
+              placeholder=" "
+            />
+            <p class="err">Phone no too short</p>
+          </label>
+
+          <div>
+            <button type="submit">go</button>
+          </div>
+        </form>
+      </section>
+
+      <section>
+        <form>
+          <p>Normal</p>
+          <label>
+            <span>email (normal)</span>
+            <input type="email" name="email" placeholder="Your email" />
+          </label>
+          <p>no autocomplete:</p>
+          <label>
+            <span>confirm email (no autocomplete)</span>
+            <input
+              type="email"
+              name="email"
+              placeholder="Your email"
+              autocomplete="off"
+            />
+          </label>
+          <p>
+            autocomplete tags (your browser should suggest some previous
+            addresses here) <a
+              href="https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill"
+              >token spec here</a
+            >
+          </p>
+          <label>
+            <span>Your street:</span>
+            <input
+              type="text"
+              name="street"
+              placeholder="Your streetname"
+              autocomplete="street-address"
+            />
+          </label>
+          <label>
+            <span>postcode</span>
+            <input
+              type="text"
+              name="postcode"
+              placeholder="Your streetname"
+              autocomplete="postal-code"
+            />
+          </label>
+          <label>
+            <span>Mobile no</span>
+            <input
+              type="text"
+              name="mobile"
+              placeholder="Your mobile number"
+              autocomplete="mobile"
+            />
+          </label>
+          <div>
+            <button>Go</button>
+          </div>
+        </form>
+
+        <section>
+          <p>Spellcheck</p>
+          <label>
+            <span>enabled :</span>
+            <textarea spellcheck>once upon a timee</textarea>
+          </label>
+          <label>
+            <span>disabled :</span>
+            <textarea spellcheck="false">once upon a timee</textarea>
+          </label>
+        </section>
+      </section>
+
+      <section>
+        <h2>Inputmodes (mobile)</h2>
+        <label>
+          <span> numeric </span>
+          <input type="text" inputmode="numeric" />
+        </label>
+        <label>
+          <span> decimal </span>
+          <input type="text" inputmode="decimal" />
+        </label>
+        <label>
+          <span> tel </span>
+          <input type="text" inputmode="tel" />
+        </label>
+        <label>
+          <span> search </span>
+          <input type="text" inputmode="search" />
+        </label>
+        <label>
+          <span> email </span>
+          <input type="text" inputmode="email" />
+        </label>
+        <label>
+          <span> url </span>
+          <input type="text" inputmode="url" />
+        </label>
+      </section>
+    </main>
+  </body>
+</html>

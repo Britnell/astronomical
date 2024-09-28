@@ -12,27 +12,30 @@
   </head>
   <body>
     <h1>Astro</h1>
-    <ul class=" mx-auto flex flex-col items-center gap-10 ">
-      {Object.entries({
-        style: "buttonanim,blurs,grid,scroller,repeat,perspective",
-        astro: 'html,wordle,transitions,pagination',
-        qwik: 'counter,form,menu,tabs,todo,tutorial',
-        vue: 'demo,pomodoro',
-        alpine: 'demo,ajax,audio,ai-chat',
-        three: 'wave'
-      }).map(([key,val])=>(
-        <li class=" " >
-          <div>
-            <span class="px-4 text-center text-2xl bg-blue-500">{key}</span>
-            <ul class="list-disc pl-6">
-              {val.split(",").map((page) => (
-              <li class=" underline">
-                  <a href={`/${key}/${page}`}>{page}</a>
-              </li>))}
-            </ul>
-          </div>
-        </li>
-      ))}
+    <ul class="mx-auto flex flex-col items-center gap-10">
+      {
+        Object.entries({
+          style: "buttonanim,blurs,grid,scroller,repeat,perspective",
+          astro: "html,wordle,transitions,pagination,inputs,forms,target",
+          qwik: "counter,form,menu,tabs,todo,tutorial",
+          vue: "demo,pomodoro",
+          alpine: "demo,ajax,audio,ai-chat",
+          three: "wave",
+        }).map(([key, val]) => (
+          <li class=" ">
+            <div>
+              <span class="px-4 text-center text-2xl bg-blue-500">{key}</span>
+              <ul class="list-disc pl-6">
+                {val.split(",").map((page) => (
+                  <li class=" underline">
+                    <a href={`/${key}/${page}`}>{page}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </li>
+        ))
+      }
     </ul>
   </body>
 </html>

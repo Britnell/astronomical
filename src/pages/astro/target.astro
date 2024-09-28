@@ -1,0 +1,78 @@
+---
+const tabs = ["home", "about", "contact"];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    main > section {
+      display: none;
+
+      padding: 0.5rem;
+      border: 1px solid black;
+      min-height: 8rem;
+      h2 {
+        font-size: 1.6rem;
+      }
+    }
+    main > section:target {
+      display: block;
+    }
+    main > section#home {
+      display: block;
+    }
+
+    main:has(> section:target) > section#home:not(:target) {
+      display: none;
+    }
+
+    body:has(section#home:target) a[href$="#home"],
+    body:has(section#about:target) a[href$="#about"],
+    body:has(section#contact:target) a[href$="#contact"] {
+      color: white;
+      background: black;
+    }
+  </style>
+  <body>
+    <div class="max-w-[500px] mx-auto">
+      <p>A tab-content with #target links only</p>
+      <header class="flex justify-between">
+        <a href="/">back</a>
+        <nav class="flex gap-2">
+          {
+            tabs.map((tab) => (
+              <a class=" px-2 py-1 border" href={`/astro/target#${tab}`}>
+                {tab}
+              </a>
+            ))
+          }
+        </nav>
+      </header>
+      <main>
+        <section id="home">
+          <h2>Home</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+        </section>
+        <section id="about">
+          <h2>About</h2>
+          <p>
+            Necessitatibus itaque officiis dignissimos debitis consequatur
+            soluta sit iusto.
+          </p>
+        </section>
+        <section id="contact">
+          <h2>contact</h2>
+          <p>
+            Quos at fugiat, delectus quisquam quis similique voluptate possimus
+            distinctio totam accusantium culpa?
+          </p>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
