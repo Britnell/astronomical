@@ -1,0 +1,78 @@
+---
+import Joke from "../../joke.astro";
+
+const pets = [
+  {
+    id: 1,
+    name: "Buddy",
+    species: "Dog",
+    age: 5,
+    breed: "Golden Retriever",
+  },
+  {
+    id: 2,
+    name: "Whiskers",
+    species: "Cat",
+    age: 3,
+    breed: "Persian",
+  },
+  {
+    id: 3,
+    name: "Fido",
+    species: "Dog",
+    age: 2,
+    breed: "Labrador",
+  },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    body {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  </style>
+  <body>
+    <header class="flex justify-between">
+      <a href="/">back</a>
+      <h1>Server islands!</h1>
+      <div></div>
+    </header>
+    <section>
+      <h2>these are my pets</h2>
+      <div class="list-disc ml-6 grid grid-cols-3">
+        {
+          pets.map((pet) => (
+            <ul class=" p-4 border-2 m-4">
+              <li>#{pet.id}</li>
+              <li>Name : {pet.name}</li>
+              <li>species {pet.species},</li>
+              <li>age: {pet.age},</li>
+              <li>breed: {pet.breed}</li>
+            </ul>
+          ))
+        }
+      </div>
+    </section>
+    <section class="min-h-[100px] grid place-items-center">
+      <Joke server:defer>
+        <div slot="fallback">
+          <p>LOADING JOKE...</p>
+        </div>
+      </Joke>
+    </section>
+    <p>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Quaerat illum
+      architecto necessitatibus ullam rerum corporis corrupti quod deserunt
+      consectetur, sapiente, sed odio. Tempore, quis! Obcaecati minima modi nemo
+      blanditiis magnam.
+    </p>
+  </body>
+</html>
