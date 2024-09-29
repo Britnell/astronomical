@@ -111,6 +111,7 @@ interface FormField {
       </form>
     </main>
     <script>
+      // @ts-ignore
       window["theform"].addEventListener("submit", (ev) => {
         ev.preventDefault();
         const f = new FormData(ev.target);
