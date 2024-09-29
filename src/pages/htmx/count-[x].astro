@@ -1,7 +1,7 @@
 ---
 export const prerender = false;
 
-const count = Astro.params.x;
+const count = Astro.params.x ?? 0;
 console.log(" COUNT ", { count });
 ---
 
