@@ -46,45 +46,67 @@
         let seeking = false;
         let updateAfter = false
         let targetTime = 0;
-        
 
-        videoEl.addEventListener('seeked', () => {
-            seeking = false
-            if(updateAfter){
-                updateAfter = false
-                seeking = true;
-                videoEl.currentTime = targetTime
-            }
-        });
 
         window.addEventListener('load',(ev)=>{
-            const scrollPos = getScrollProgress();
-            controlVideo(scrollPos);
+            controlVideo();
         })
 
         window.addEventListener('scroll', () => {
-            const scrollPos = getScrollProgress();
-            controlVideo(scrollPos);
+            controlVideo();
         });
 
+        function controlVideo(){
+            const pos = getScrollProgress(); 
+            targetTime = pos * videoEl.duration;            
+            
+            if(!seeking)    setVideoTime()
+        }
+
+        videoEl.addEventListener('seeked', () => {
+            seeking = false
+            setVideoTime()
+        });
+
+
+        let method = 'b';
+        let videoPos = 0;
+
+        const setVideoTime = ()=>{      
+                  
+            if(isNaN(targetTime)) return;
+
+            if(method==='a'){
+                videoEl.currentTime = targetTime
+                updateAfter = false
+            }
+
+            if(method==='b'){
+                let diff = targetTime - videoPos;
+                const max = 0.1;
+
+                if(Math.abs(diff)< 0.0001 ){
+                    // seeking = false;
+                    return
+                }
+
+                if(diff > max) diff = max;
+                if(diff < -max) diff = -max;
+
+                let target = videoPos  + diff
+                videoPos = target
+                videoEl.currentTime = target       
+            }
+            
+            seeking = true;
+        }
         function getScrollProgress() {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollTop = document.documentElement.scrollTop;
             const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             return scrollTop / scrollHeight;
         }
 
-        function controlVideo(pos){
-            targetTime = pos * videoEl.duration;
-            if(!seeking){
-                seeking = true;
-                videoEl.currentTime = targetTime
-            }
-            else {
-                updateAfter = true;
-            }
-        }
 
-        // window.addEventListener('mousemove',(ev)=>controlVideo(ev.clientX / window.innerWidth))
 
 
 
