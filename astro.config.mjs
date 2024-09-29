@@ -20,6 +20,9 @@ export default defineConfig({
     }),
     tailwind(),
   ],
-  output: "static",
+  output: "hybdrid",
+  experimental: {
+    serverIslands: true,
+  },
   adapter: vercel(),
 });
