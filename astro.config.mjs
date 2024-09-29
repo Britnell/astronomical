@@ -20,7 +20,7 @@ export default defineConfig({
     }),
     tailwind(),
   ],
-  output: "hybdrid",
+  output: "hybrid",
   experimental: {
     serverIslands: true,
   },
