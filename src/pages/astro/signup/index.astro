@@ -16,13 +16,9 @@ import { ViewTransitions } from "astro:transitions";
   </head>
 
   <body>
-    <header>
-      <h1>Dropdown</h1>
-    </header>
-
     <script is:inline>
-      document.addEventListener("alpine:init", () => {
-        Alpine.data("dropdown", () => ({
+      const postcode = () =>
+        Alpine.data("postcode", () => ({
           ip: "",
           options: [],
           error: "",
@@ -35,12 +31,12 @@ import { ViewTransitions } from "astro:transitions";
               empty: "please provide your postcode",
             }[error];
           },
-          async update() {
-            // console.log(" upd ", this.ip);
-            const resp = await this.fetchWithCancel(
+          update() {
+            this.fetchWithCancel(
               `http://api.postcodes.io/postcodes/${this.ip}/autocomplete`
-            );
-            this.options = resp.result ?? [];
+            ).then((resp) => {
+              this.options = resp.result ?? [];
+            });
           },
           fetchWithCancel(url) {
             if (this.controller) {
@@ -57,48 +53,83 @@ import { ViewTransitions } from "astro:transitions";
             );
           },
         }));
-      });
+
+      document.addEventListener("astro:page-load", postcode);
+
+      document.addEventListener("alpine:init", postcode);
     </script>
-    <section>
-      <h2>Can we build a fancy dropdown with native html?</h2>
-      <form
-        method="post"
-        action="/astro/signup/api/postcode"
-        transition:persist
-      >
-        <div x-data="dropdown">
-          <label for="postcode">Your Postcode</label>
-          <input
-            type="text"
-            name="postcode"
-            id="postcode"
-            transition:name="postcode"
-            transition:persist
-            class="border border-black block"
-            list="codes"
-            required
-            autofocus
-            x-model="ip"
-            @input.debounce.100ms="update"
-            :invalid="invalid"
-          />
-          <p
-            x-show="invalid || error"
-            x-text="invalid ? 'invalid postcode': error "
-            class="text-red-800"
-          >
-          </p>
-          <datalist id="codes">
-            <template x-for="opt in options">
-              <option :value="opt" x-text="opt"></option>
-            </template>
-            <option x-show="invalid" :value="ip">
-              Please enter a valid postcode
-            </option>
-          </datalist>
-          <button class="block" :disabled="invalid">Go</button>
-        </div>
-      </form>
-    </section>
+
+    <div class="max-w-[500px] mx-auto">
+      <header class="py-3">
+        <h1 class="text-xl font-bold">Signup</h1>
+      </header>
+      <main>
+        <p>
+          Can we build a modern signup flow + UX with as much native html as
+          possible?
+        </p>
+
+        <form
+          method="post"
+          action="/astro/signup/api/postcode"
+          transition:persist
+        >
+          <div x-data="postcode" class="my-6 grid place-items-center">
+            <div class="w-[300px] flex flex-col gap-2">
+              <label for="postcode">Your Postcode</label>
+              <input
+                type="text"
+                name="postcode"
+                id="postcode"
+                transition:name="postcode"
+                transition:persist
+                class="border border-black w-full px-2 py-1"
+                list="codes"
+                required
+                autofocus
+                x-model="ip"
+                @input.debounce.100ms="update"
+                :invalid="invalid"
+                autocomplete="off"
+              />
+              <p
+                x-show="invalid || error"
+                x-text="invalid ? 'invalid postcode': error "
+                class="text-red-800"
+              >
+              </p>
+              <datalist id="codes">
+                <template x-for="opt in options">
+                  <option :value="opt" x-text="opt"></option>
+                </template>
+                <option x-show="invalid" :value="ip">
+                  Please enter a valid postcode
+                </option>
+              </datalist>
+              <button class="block bg-blue-200 w-full" :disabled="invalid"
+                >Next</button
+              >
+            </div>
+          </div>
+        </form>
+        <ul class="list-disc ml-6">
+          <li>fancy dropdown using {"<input /> and <datalist />"}</li>
+          <li>astro view transition for smooth client side routing</li>
+          <li>
+            lets leave data validation to the server side, and not dupliate it!
+          </li>
+          <!-- <li>
+            input + datalist is cool, but browser inserts its own auto-complete
+            values that were previously submitted and this ruins things ...
+          </li> -->
+          <li>
+            I tried passing input values from one step to next with view
+            transition persistence, but this is not great / reliable, properties
+            like required & readonly persist and aren't always overwritten.
+            values also get mixed up and auto-filled by browser...
+          </li>
+        </ul>
+      </main>
+    </div>
   </body>
 </html>

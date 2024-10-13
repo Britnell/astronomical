@@ -7,7 +7,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
   const postcode = form.get("postcode");
   if (!postcode) return redirect("/astro/signup?error=empty");
 
-  const name = form.get("name");
+  const name = form.get("firstname");
   const phone = form.get("phone");
   if (!name || !phone) return redirect("/astro/signup/one?error=missing");
 

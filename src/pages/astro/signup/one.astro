@@ -16,52 +16,67 @@ import { ViewTransitions } from "astro:transitions";
   </head>
 
   <body>
-    <header>
-      <h1>WElcome on board!</h1>
-    </header>
-    <h2>please tell us more about yourself</h2>
+    <div class="max-w-[500px] mx-auto">
+      <header class="py-3">
+        <h1 class="text-xl font-bold">Signup</h1>
+      </header>
+      <main>
+        <p>please tell us more about yourself</p>
 
-    <form method="post" action="/astro/signup/api/one">
-      <div class="border p-3">
-        <h2>From previous</h2>
-        <label for="postcode">postcode</label>
-        <input
-          type="text"
-          name="postcode"
-          id="postcode"
-          transition:name="postcode"
-          transition:persist
-        />
-      </div>
+        <form method="post" action="/astro/signup/api/one">
+          <div class="my-6 grid place-items-center">
+            <div class="max-w-[400px] flex flex-col gap-2">
+              <div class="grid grid-cols-[100px_1fr] opacity-50 bg-gray-300">
+                <label for="postcode">postcode</label>
+                <input
+                  type="text"
+                  name="postcode"
+                  id="postcode"
+                  transition:name="postcode"
+                  transition:persist
+                  class="border border-black bg-gray-300"
+                />
+              </div>
 
-      <div>
-        <label for="name">name</label>
-        <input
-          type="text"
-          name="name"
-          id="name"
-          transition:name="name"
-          transition:persist
-          class="border border-black"
-          required
-        />
-      </div>
+              <div class="grid grid-cols-[100px_1fr]">
+                <label for="firstname">firstname</label>
+                <input
+                  type="text"
+                  name="firstname"
+                  id="firstname"
+                  transition:name="firstname"
+                  transition:persist
+                  class="border border-black"
+                  required
+                />
+              </div>
 
-      <div>
-        <label for="phone">phone</label>
-        <input
-          type="text"
-          name="phone"
-          id="phone"
-          transition:name="phone"
-          transition:persist
-          class="border border-black"
-          minlength="11"
-          required
-        />
-      </div>
+              <div class="grid grid-cols-[100px_1fr]">
+                <label for="phone">phone</label>
+                <input
+                  type="text"
+                  name="phone"
+                  id="phone"
+                  transition:name="phone"
+                  transition:persist
+                  class="border border-black"
+                  minlength="11"
+                  required
+                />
+              </div>
 
-      <button class="block">next</button>
-    </form>
+              <button class="block bg-blue-200 w-full">Next</button>
+            </div>
+          </div>
+        </form>
+        <ul class="list-disc ml-6">
+          <li>
+            using advanced {"<input />"} attributes to replace client side js input
+            checks
+          </li>
+          <li>receive errors from Backend via url params</li>
+        </ul>
+      </main>
+    </div>
   </body>
 </html>

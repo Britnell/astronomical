@@ -16,84 +16,78 @@ import { ViewTransitions } from "astro:transitions";
   </head>
 
   <body>
-    <header>
-      <h1>Review</h1>
-    </header>
+    <div class="max-w-[500px] mx-auto">
+      <header class="py-3">
+        <h1 class="text-xl font-bold">Signup</h1>
+      </header>
 
-    <h2>review before you submit</h2>
-    <p>
-      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatem,
-      velit quos. Eveniet rem dolorum placeat quod exercitationem. Illum nam
-      molestiae nulla, cumque, repellat rem cupiditate sed at commodi, autem
-      voluptas?
-    </p>
-    <script is:inline>
-      document.addEventListener("alpine:init", () => {
-        Alpine.data("dropdown", () => ({}));
-      });
-    </script>
-    <form
-      method="post"
-      action="/astro/signup/api/one"
-      class="border border-blue-600 p-4 inline-flex mx-auto flex-col gap-2"
-    >
-      <div>
-        <label for="postcode">postcode</label>
-        <input
-          type="text"
-          transition:name="postcode"
-          name="postcode"
-          id="postcode"
-          transition:name="postcode"
-          transition:persist
-          class="border border-black"
-        />
-      </div>
+      <main>
+        <h2>We're so glad you're here</h2>
+        <p>please review your details before you submit</p>
+        <form>
+          <div class="my-6 grid place-items-center">
+            <div class="max-w-[400px] flex flex-col gap-2">
+              <div class="grid grid-cols-[100px_1fr]">
+                <label for="postcode">postcode</label>
+                <input
+                  type="text"
+                  transition:name="postcode"
+                  name="postcode"
+                  id="postcode"
+                  transition:name="postcode"
+                  transition:persist
+                  class="border border-black"
+                />
+              </div>
 
-      <div>
-        <label for="name">name</label>
-        <input
-          name="name"
-          type="text"
-          transition:name="name"
-          transition:persist
-          id="name"
-          class="border border-black"
-          required
-        />
-      </div>
+              <div class="grid grid-cols-[100px_1fr]">
+                <label for="firstname">firstname</label>
+                <input
+                  name="firstname"
+                  id="firstname"
+                  transition:name="firstname"
+                  transition:persist
+                  type="text"
+                  class="border border-black"
+                  required
+                />
+              </div>
 
-      <div>
-        <label for="phone">phone</label>
-        <input
-          name="phone"
-          type="text"
-          transition:name="phone"
-          transition:persist
-          id="phone"
-          class="border border-black"
-          minlength="11"
-          required
-        />
-      </div>
+              <div class="grid grid-cols-[100px_1fr]">
+                <label for="phone">phone</label>
+                <input
+                  name="phone"
+                  type="text"
+                  transition:name="phone"
+                  transition:persist
+                  id="phone"
+                  class="border border-black"
+                  minlength="11"
+                  required
+                />
+              </div>
 
-      <div>
-        <label for="code">code</label>
-        <input
-          name="code"
-          type="text"
-          transition:name="code"
-          transition:persist
-          id="code"
-          class="border border-black"
-          minlength="6"
-          maxlength="6"
-          title="Please enter your 6 Digit code"
-          required
-        />
-      </div>
+              <div class="grid grid-cols-[100px_1fr]">
+                <label for="code">code</label>
+                <input
+                  name="code"
+                  type="text"
+                  transition:name="code"
+                  transition:persist
+                  id="code"
+                  class="border border-black"
+                  minlength="6"
+                  maxlength="6"
+                  title="Please enter your 6 Digit code"
+                  required
+                />
+              </div>
 
-      <button disabled class="block">Submit</button>
-    </form>
+              <button class="block bg-blue-200 w-full" disabled>submit</button>
+            </div>
+          </div>
+        </form>
+      </main>
+    </div>
   </body>
 </html>
