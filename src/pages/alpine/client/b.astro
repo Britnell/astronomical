@@ -15,6 +15,13 @@ import { ViewTransitions } from "astro:transitions";
   <body>
     <h1>Page B</h1>
     <p>Alpine issues wieh client side routing</p>
+
+    <section x-data="count">
+      <label>Counter : </label>
+      <button @click="count" class="bg-gray-300">+1</button>
+      <p>Your count: <span x-text="val"></span></p>
+    </section>
+
     <script is:inline>
       if (typeof window.input === "undefined") {
         window.input = () => {
@@ -33,17 +40,13 @@ import { ViewTransitions } from "astro:transitions";
         console.log("alpine:init");
         window.input();
       });
-      document.addEventListener("astro:page-load", () => {
-        console.log("astro:page-load");
+      document.addEventListener("astro:after-swap", () => {
+        console.log("astro:after-swap");
         window.input();
       });
       // window.input();
     </script>
-    <section x-data="count">
-      <label>Counter : </label>
-      <button @click="count" class="bg-gray-300">+1</button>
-      <p>Your count: <span x-text="val"></span></p>
-    </section>
+
     <a href="/alpine/client/a" class="bg-gray-300">{"go to A"}</a>
   </body>
 </html>
