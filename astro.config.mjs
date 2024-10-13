@@ -25,4 +25,7 @@ export default defineConfig({
     serverIslands: true,
   },
   adapter: vercel(),
+  devToolbar: {
+    enabled: false
+  }
 });
