@@ -16,16 +16,28 @@ import { ViewTransitions } from "astro:transitions";
     <h1>Page B</h1>
     <p>Alpine issues wieh client side routing</p>
     <script is:inline>
+      if (typeof window.input === "undefined") {
+        window.input = () => {
+          console.log(" Alpine.data('count') ");
+          Alpine.data("count", () => ({
+            val: 1,
+            count() {
+              this.val += 1;
+              const valid = this.val % 2 === 0;
+              console.log(this.val, valid);
+            },
+          }));
+        };
+      }
       document.addEventListener("alpine:init", () => {
-        Alpine.data("count", () => ({
-          val: 1,
-          count() {
-            this.val += 1;
-            const valid = this.val % 2 === 0;
-            console.log(this.val, valid);
-          },
-        }));
+        console.log("alpine:init");
+        window.input();
       });
+      document.addEventListener("astro:page-load", () => {
+        console.log("astro:page-load");
+        window.input();
+      });
+      // window.input();
     </script>
     <section x-data="count">
       <label>Counter : </label>

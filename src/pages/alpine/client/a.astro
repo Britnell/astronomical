@@ -17,7 +17,8 @@ import { ViewTransitions } from "astro:transitions";
     <p>Alpine issues wieh client side routing</p>
     <script is:inline>
       if (typeof window.input === "undefined") {
-        window.input = () =>
+        window.input = () => {
+          console.log(" Alpine.data('input') ");
           Alpine.data("input", () => ({
             val: "",
             check() {
@@ -25,9 +26,16 @@ import { ViewTransitions } from "astro:transitions";
               console.log(this.val, valid);
             },
           }));
+        };
       }
-      document.addEventListener("alpine:init", window.input);
-      document.addEventListener("astro:page-load", window.input);
+      document.addEventListener("alpine:init", () => {
+        console.log("alpine:init");
+        window.input();
+      });
+      document.addEventListener("astro:page-load", () => {
+        console.log("astro:page-load");
+        window.input();
+      });
     </script>
     <section x-data="input">
       <label>
