@@ -1,0 +1,67 @@
+---
+import { ViewTransitions } from "astro:transitions";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+    <ViewTransitions />
+  </head>
+
+  <body>
+    <header>
+      <h1>WElcome on board!</h1>
+    </header>
+    <h2>please tell us more about yourself</h2>
+
+    <form method="post" action="/astro/signup/api/one">
+      <div class="border p-3">
+        <h2>From previous</h2>
+        <label for="postcode">postcode</label>
+        <input
+          type="text"
+          name="postcode"
+          id="postcode"
+          transition:name="postcode"
+          transition:persist
+        />
+      </div>
+
+      <div>
+        <label for="name">name</label>
+        <input
+          type="text"
+          name="name"
+          id="name"
+          transition:name="name"
+          transition:persist
+          class="border border-black"
+          required
+        />
+      </div>
+
+      <div>
+        <label for="phone">phone</label>
+        <input
+          type="text"
+          name="phone"
+          id="phone"
+          transition:name="phone"
+          transition:persist
+          class="border border-black"
+          minlength="11"
+          required
+        />
+      </div>
+
+      <button class="block">next</button>
+    </form>
+  </body>
+</html>

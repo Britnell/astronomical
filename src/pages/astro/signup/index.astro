@@ -1,0 +1,104 @@
+---
+import { ViewTransitions } from "astro:transitions";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+    <ViewTransitions />
+  </head>
+
+  <body>
+    <header>
+      <h1>Dropdown</h1>
+    </header>
+
+    <script is:inline>
+      document.addEventListener("alpine:init", () => {
+        Alpine.data("dropdown", () => ({
+          ip: "",
+          options: [],
+          error: "",
+          loading: false,
+          init() {
+            const url = new URL(window.location);
+            const error = url.searchParams.get("error");
+            this.error = {
+              invalid: "Postcode was invalid.",
+              empty: "please provide your postcode",
+            }[error];
+          },
+          async update() {
+            // console.log(" upd ", this.ip);
+            const resp = await this.fetchWithCancel(
+              `http://api.postcodes.io/postcodes/${this.ip}/autocomplete`
+            );
+            this.options = resp.result ?? [];
+          },
+          fetchWithCancel(url) {
+            if (this.controller) {
+              this.controller.abort();
+            }
+            this.controller = new AbortController();
+            return fetch(url, { signal: this.controller.signal })
+              .then((response) => response.json())
+              .catch((err) => console.log("Fetch error:", err));
+          },
+          get invalid() {
+            return (
+              !this.loading && this.ip !== "" && this.options?.length === 0
+            );
+          },
+        }));
+      });
+    </script>
+    <section>
+      <h2>Can we build a fancy dropdown with native html?</h2>
+      <form
+        method="post"
+        action="/astro/signup/api/postcode"
+        transition:persist
+      >
+        <div x-data="dropdown">
+          <label for="postcode">Your Postcode</label>
+          <input
+            type="text"
+            name="postcode"
+            id="postcode"
+            transition:name="postcode"
+            transition:persist
+            class="border border-black block"
+            list="codes"
+            required
+            autofocus
+            x-model="ip"
+            @input.debounce.100ms="update"
+            :invalid="invalid"
+          />
+          <p
+            x-show="invalid || error"
+            x-text="invalid ? 'invalid postcode': error "
+            class="text-red-800"
+          >
+          </p>
+          <datalist id="codes">
+            <template x-for="opt in options">
+              <option :value="opt" x-text="opt"></option>
+            </template>
+            <option x-show="invalid" :value="ip">
+              Please enter a valid postcode
+            </option>
+          </datalist>
+          <button class="block" :disabled="invalid">Go</button>
+        </div>
+      </form>
+    </section>
+  </body>
+</html>
