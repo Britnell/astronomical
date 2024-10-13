@@ -1,0 +1,41 @@
+---
+import { ViewTransitions } from "astro:transitions";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.js"
+    ></script>
+    <ViewTransitions />
+  </head>
+  <body>
+    <h1>Page A</h1>
+    <p>Alpine issues wieh client side routing</p>
+    <script is:inline>
+      if (typeof window.input === "undefined") {
+        window.input = () =>
+          Alpine.data("input", () => ({
+            val: "",
+            check() {
+              const valid = this.val.length % 2 === 0;
+              console.log(this.val, valid);
+            },
+          }));
+      }
+      document.addEventListener("alpine:init", window.input);
+      document.addEventListener("astro:page-load", window.input);
+    </script>
+    <section x-data="input">
+      <label>
+        <span> Name: </span>
+        <input type="text" @input="check" x-model="val" class="bg-gray-300" />
+      </label>
+      <p>You entered <span x-text="val"></span></p>
+    </section>
+    <a href="/alpine/client/b" class="bg-gray-300">{" go to B"}</a>
+  </body>
+</html>
